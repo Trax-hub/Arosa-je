@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PlantesRepository::class)]
-class Plantes
+class Plant
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,6 +27,9 @@ class Plantes
 
     #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'plant')]
     private Collection $posts;
+
+    #[ORM\ManyToOne(inversedBy: 'plants')]
+    private ?User $users = null;
 
     public function __construct()
     {
@@ -97,6 +100,18 @@ class Plantes
         if ($this->posts->removeElement($post)) {
             $post->removePlant($this);
         }
+
+        return $this;
+    }
+
+    public function getUsers(): ?User
+    {
+        return $this->users;
+    }
+
+    public function setUsers(?User $users): self
+    {
+        $this->users = $users;
 
         return $this;
     }

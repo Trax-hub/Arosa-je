@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Plantes;
+use App\Entity\Plant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Plantes>
+ * @extends ServiceEntityRepository<Plant>
  *
- * @method Plantes|null find($id, $lockMode = null, $lockVersion = null)
- * @method Plantes|null findOneBy(array $criteria, array $orderBy = null)
- * @method Plantes[]    findAll()
- * @method Plantes[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Plant|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Plant|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Plant[]    findAll()
+ * @method Plant[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class PlantesRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Plantes::class);
+        parent::__construct($registry, Plant::class);
     }
 
-    public function save(Plantes $entity, bool $flush = false): void
+    public function save(Plant $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class PlantesRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Plantes $entity, bool $flush = false): void
+    public function remove(Plant $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 

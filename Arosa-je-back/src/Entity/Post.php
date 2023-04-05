@@ -25,7 +25,7 @@ class Post
     #[ORM\Column(length: 255)]
     private ?string $localisation = null;
 
-    #[ORM\ManyToMany(targetEntity: Plantes::class, inversedBy: 'posts')]
+    #[ORM\ManyToMany(targetEntity: Plant::class, inversedBy: 'posts')]
     private Collection $plant;
 
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Comment::class)]
@@ -79,14 +79,14 @@ class Post
     }
 
     /**
-     * @return Collection<int, Plantes>
+     * @return Collection<int, Plant>
      */
     public function getPlant(): Collection
     {
         return $this->plant;
     }
 
-    public function addPlant(Plantes $plant): self
+    public function addPlant(Plant $plant): self
     {
         if (!$this->plant->contains($plant)) {
             $this->plant->add($plant);
@@ -95,7 +95,7 @@ class Post
         return $this;
     }
 
-    public function removePlant(Plantes $plant): self
+    public function removePlant(Plant $plant): self
     {
         $this->plant->removeElement($plant);
 
