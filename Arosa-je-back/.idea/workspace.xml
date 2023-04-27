@@ -5,7 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="22fc1117-e533-45f1-9e8d-6245aac934c2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ConversationController.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/MessageController.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Conversation.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Message.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/ConversationType.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/MessageType.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/ConversationRepository.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/MessageRepository.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/conversation/_delete_form.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/conversation/_form.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/conversation/edit.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/conversation/index.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/conversation/new.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/conversation/show.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/message/_delete_form.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/message/_form.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/message/edit.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/message/index.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/message/new.html.twig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/message/show.html.twig" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
