@@ -2,6 +2,7 @@
   "name": "Frontend",
   "displayName": "Frontend",
   "expo": {
+    "permissions": ["CAMERA"],
     "name": "Frontend",
     "slug": "Frontend",
     "scheme": "frontend",

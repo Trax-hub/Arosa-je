@@ -17,6 +17,7 @@ import * as Screens from "app/screens"
 import Config from "../config"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { colors } from "app/theme"
+import { createDrawerNavigator } from "@react-navigation/drawer"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -35,7 +36,8 @@ export type AppStackParamList = {
   Welcome: undefined
   Home: undefined
   // 🔥 Your screens go here
-  // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  Scan: undefined
+	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
 /**
@@ -51,17 +53,19 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createNativeStackNavigator<AppStackParamList>()
-
+const Drawer = createDrawerNavigator();
 const AppStack = observer(function AppStack() {
   return (
-    <Stack.Navigator
-      screenOptions={{ headerShown: true, navigationBarColor: colors.background }}
+    <Drawer.Navigator
+    initialRouteName="Home"
+      // screenOptions={{ headerShown: true, }}
     >
-          <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} />
-          <Stack.Screen name="Home" component={Screens.HomeScreen} />
+          <Drawer.Screen name="Welcome" component={Screens.WelcomeScreen}/>
+          <Drawer.Screen name="Home" component={Screens.HomeScreen} />
       {/** 🔥 Your screens go here */}
-      {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
-    </Stack.Navigator>
+      <Drawer.Screen name="Scan" component={Screens.ScanScreen} />
+			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
+    </Drawer.Navigator>
   )
 })
 

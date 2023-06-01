@@ -21,6 +21,8 @@ import { ErrorBoundary } from "./screens/ErrorScreen/ErrorBoundary"
 import * as storage from "./utils/storage"
 import { customFontsToLoad } from "./theme"
 import { setupReactotron } from "./services/reactotron"
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { HomeScreen, ScanScreen } from "./screens"
 import Config from "./config"
 
 // Set up Reactotron, which is a free desktop app for inspecting and debugging
@@ -112,6 +114,7 @@ function App(props: AppProps) {
         />
       </ErrorBoundary>
     </SafeAreaProvider>
+
   )
 }
 
