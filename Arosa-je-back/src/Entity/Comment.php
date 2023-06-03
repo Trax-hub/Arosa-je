@@ -28,6 +28,12 @@ class Comment
     #[ORM\ManyToOne(inversedBy: 'comments')]
     private ?User $users = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $longitude = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $latitude = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -77,6 +83,30 @@ class Comment
     public function setUsers(?User $users): self
     {
         $this->users = $users;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): self
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): self
+    {
+        $this->latitude = $latitude;
 
         return $this;
     }
