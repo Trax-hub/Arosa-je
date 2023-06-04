@@ -8,8 +8,8 @@
             "ref": "0330386d716d3eecc52ee5ac66976e733eb8f961"
         },
         "files": [
-            "./config/routes/api_platform.yaml",
-            "./src/ApiResource/.gitignore"
+            "config/routes/api_platform.yaml",
+            "src/ApiResource/.gitignore"
         ]
     },
     "doctrine/annotations": {
