@@ -1,36 +1,65 @@
-import React, { FC } from "react"
+import React, { FC, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { ViewStyle } from "react-native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { AppStackScreenProps } from "app/navigators"
 import { AutoImage, Button, Card, Screen, Text } from "app/components"
-// import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "app/models"
+import axios from "axios"
 
 interface CommentsScreenProps extends NativeStackScreenProps<AppStackScreenProps<"Comments">> {}
 
-export const CommentsScreen: FC<CommentsScreenProps> = observer(function CommentsScreen() {
-  // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
+import { useNavigation } from '@react-navigation/native';
 
-  // Pull in navigation via hook
-  // const navigation = useNavigation()
+// Inside your component
+export const CommentsScreen: FC<CommentsScreenProps> = observer(function CommentsScreen() {
+  // State pour stocker les données des posts
+  const [posts, setPosts] = useState([])
+  const navigation = useNavigation();
+
+  const fetchPosts = () => {
+    // Récupère les données lors du chargement du composant
+    axios.get("http://172.20.10.5:8000/api/posts")
+      .then((response) => {
+        // met à jour le state avec les données récupérées
+        setPosts(response.data['hydra:member'])
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
+  useEffect(() => {
+    fetchPosts();
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchPosts();
+    });
+
+    return unsubscribe;
+  }, [navigation])
+
   return (
     <Screen style={$root} preset="scroll">
-      <Card
-          verticalAlignment="center"
-          LeftComponent={<Button 
-            preset="reversed" 
-            text="Découvrir"
-            style={{ backgroundColor: '#2F5E3D' }} 
-            textStyle={{ color: '#FFFFFF' }} 
-          />}
-          heading="Nom de la plante"
-          content="conseil"
-        />
+      {
+        // Itérer sur les posts et créer une carte pour chaque
+        posts.map((post) => (
+          <Card
+            key={post.id}
+            verticalAlignment="center"
+            LeftComponent={<Button 
+              preset="reversed" 
+              text="Découvrir"
+              style={{ backgroundColor: '#2F5E3D' }} 
+              textStyle={{ color: '#FFFFFF' }} 
+            />}
+            heading={post.title}
+            content={post.description}
+          />
+        ))
+      }
     </Screen>
   )
 })
+
 
 const $root: ViewStyle = {
   flex: 1,

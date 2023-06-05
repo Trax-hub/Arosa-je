@@ -4,6 +4,8 @@ import { ViewStyle } from "react-native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { AppStackScreenProps } from "app/navigators"
 import { Screen, Text } from "app/components"
+import MapView from 'react-native-maps';
+import { StyleSheet, View } from 'react-native';
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
 
@@ -16,12 +18,18 @@ export const MapScreen: FC<MapScreenProps> = observer(function MapScreen() {
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (
-    <Screen style={$root} preset="scroll">
-      <Text text="map" />
-    </Screen>
-  )
+    <View style={styles.container}>
+      <MapView style={styles.map} />
+    </View>
+  );
 })
 
-const $root: ViewStyle = {
-  flex: 1,
-}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
+});

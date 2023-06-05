@@ -1,14 +1,17 @@
 import React, { FC, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Camera, CameraType } from "expo-camera"
 import * as FileSystem from "expo-file-system"
 import { ViewStyle } from "react-native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { AppStackScreenProps } from "app/navigators"
-import { Card, Screen } from "app/components"
+import { Button, Card, Screen } from "app/components"
 import openai from "app/services/api/api"
 import Spinner from "react-native-loading-spinner-overlay"
+import axios from "axios"
+import * as Location from "expo-location"
+import { Alert } from "react-native"
 
 interface ScanScreenProps extends NativeStackScreenProps<AppStackScreenProps<"Scan">> {}
 
@@ -19,8 +22,9 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
   const [identifiedPlant, setIdentifiedPlant] = useState(null)
   const [response, setResponse] = useState("")
   const [loading, setLoading] = useState(false)
-  const [plantName, setPlantName] = useState("");
-const [plantExplanation, setPlantExplanation] = useState("");
+  const [plantName, setPlantName] = useState("")
+  const [plantExplanation, setPlantExplanation] = useState("")
+  const [showCard, setShowCard] = useState(true)
 
   if (!permission) {
     // Camera permissions are still loading
@@ -35,6 +39,46 @@ const [plantExplanation, setPlantExplanation] = useState("");
         <Button onPress={requestPermission} title="grant permission" />
       </View>
     )
+  }
+
+  async function handlePublish() {
+    const location = await getLocation()
+
+    if (!location) {
+      console.error("Location could not be determined")
+      Alert.alert("Erreur", "La localisation n'a pas pu être déterminée.")
+      return
+    }
+
+    const plantData = {
+      title: plantName,
+      description: plantExplanation,
+      localisation: "test",
+      longitude: location.coords.longitude,
+      latitude: location.coords.latitude,
+      photo: "test",
+    }
+
+    try {
+      const response = await axios.post("http://172.20.10.5:8000/api/posts", plantData)
+      console.log(response.data)
+      Alert.alert("Succès", "La publication a réussi.")
+      setShowCard(false) // Hide card
+    } catch (error) {
+      console.error(error)
+      Alert.alert("Erreur", "Une erreur est survenue lors de la publication.")
+    }
+  }
+
+  async function getLocation() {
+    let { status } = await Location.requestForegroundPermissionsAsync()
+    if (status !== "granted") {
+      console.error("Permission to access location was denied")
+      return
+    }
+
+    let location = await Location.getCurrentPositionAsync({})
+    return location
   }
 
   function toggleCameraType() {
@@ -52,16 +96,16 @@ const [plantExplanation, setPlantExplanation] = useState("");
   async function chatgpt(plantName) {
     const result = await openai.post("https://api.openai.com/v1/completions", {
       model: "text-davinci-003",
-      prompt: `Comment entretenir cette plante le nom est anglais: ${plantName}? je veux que tu me reponde en trois phrase sous ce format. Plante :  "tu mets juste le 'nom de plante' que tu traduis en français". Explications : "tu mets la réponse comment entretenir" `,
+      prompt: `Comment entretenir cette plante le nom est anglais: ${plantName}? je veux que tu me reponde en deux phrase sous ce format. Plante :  "nom de la plante en langue française". Explications : "tu mets la réponse comment entretenir" `,
       //temperature: 0.6,
       max_tokens: 175,
       n: 1,
     })
-    const responseText = result.data.choices[0].text;
-    const responseParts = responseText.split('Explications :');
-    setPlantName(responseParts[0].replace('Plante :', '').trim());
-    setPlantExplanation(responseParts[1].trim());
-    setLoading(false);
+    const responseText = result.data.choices[0].text
+    const responseParts = responseText.split("Explications :")
+    setPlantName(responseParts[0].replace("Plante :", "").trim())
+    setPlantExplanation(responseParts[1].trim())
+    setLoading(false)
   }
   async function identifyPlant(imageBase64) {
     const apiKey = "Os8HOo2WdCGszoy2QsorUVBZYEMw32FPNmKrrz3i6Oe6dxdCsG"
@@ -99,7 +143,7 @@ const [plantExplanation, setPlantExplanation] = useState("");
 
   return (
     <Screen style={$root} preset="scroll">
-            <Camera style={styles.camera} type={type} ref={cameraRef}>
+      <Camera style={styles.camera} type={type} ref={cameraRef}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
             <Text style={styles.text}>Tourner</Text>
@@ -124,20 +168,29 @@ const [plantExplanation, setPlantExplanation] = useState("");
         </View>
       )} */}
       <Text>{response}</Text>
-      {plantName && plantExplanation && (
-  <Card
-    verticalAlignment="center"
-    heading={plantName}
-    content={plantExplanation}
-  />
-)}
+      {showCard && plantName && plantExplanation && (
+        <Card
+          verticalAlignment="center"
+          heading={plantName}
+          content={plantExplanation}
+          FooterComponent={
+            <Button
+              preset="reversed"
+              text="Publier"
+              onPress={handlePublish}
+              style={{ backgroundColor: "#2F5E3D" }}
+              textStyle={{ color: "#FFFFFF" }}
+            />
+          }
+        />
+      )}
     </Screen>
   )
 })
 
 const $root: ViewStyle = {
   flex: 1,
-  backgroundColor: '#F8FFF8',
+  backgroundColor: "#F8FFF8",
 }
 
 const styles = StyleSheet.create({
