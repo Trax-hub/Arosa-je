@@ -39,8 +39,9 @@ class Post
     #[ORM\Column(nullable: true)]
     private ?float $latitude = null;
 
-    #[ORM\OneToOne(inversedBy: 'post', cascade: ['persist', 'remove'])]
-    private ?Photo $photo = null;
+    #[ORM\Column(length: 255)]
+    private ?string $photo = null;
+
 
     public function __construct()
     {
@@ -167,15 +168,16 @@ class Post
         return $this;
     }
 
-    public function getPhoto(): ?Photo
+    public function getPhoto(): ?string
     {
         return $this->photo;
     }
 
-    public function setPhoto(?Photo $photo): self
+    public function setPhoto(string $photo): self
     {
         $this->photo = $photo;
 
         return $this;
     }
+
 }
