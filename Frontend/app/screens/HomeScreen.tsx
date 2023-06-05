@@ -68,4 +68,5 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
 const $root: ViewStyle = {
   flex: 1,
   padding: 10,
+  backgroundColor: '#F8FFF8',
 }

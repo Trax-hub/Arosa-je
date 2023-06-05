@@ -1,57 +1,71 @@
-import React, { FC, useRef, useState } from "react";
-import { observer } from "mobx-react-lite";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Camera, CameraType } from 'expo-camera';
-import * as FileSystem from 'expo-file-system';
-import { ViewStyle } from "react-native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AppStackScreenProps } from "app/navigators";
-import { Screen } from "app/components";
+import React, { FC, useRef, useState } from "react"
+import { observer } from "mobx-react-lite"
+import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Camera, CameraType } from "expo-camera"
+import * as FileSystem from "expo-file-system"
+import { ViewStyle } from "react-native"
+import { NativeStackScreenProps } from "@react-navigation/native-stack"
+import { AppStackScreenProps } from "app/navigators"
+import { Screen } from "app/components"
+import openai from "app/services/api/api"
 
 interface ScanScreenProps extends NativeStackScreenProps<AppStackScreenProps<"Scan">> {}
 
 export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
-  const [type, setType] = useState(CameraType.back);
-  const [permission, requestPermission] = Camera.useCameraPermissions();
-  const cameraRef = useRef(null);
-  const [identifiedPlant, setIdentifiedPlant] = useState(null);
+  const [type, setType] = useState(CameraType.back)
+  const [permission, requestPermission] = Camera.useCameraPermissions()
+  const cameraRef = useRef(null)
+  const [identifiedPlant, setIdentifiedPlant] = useState(null)
+  const [response, setResponse] = useState("")
 
   if (!permission) {
     // Camera permissions are still loading
-    return <View />;
+    return <View />
   }
 
   if (!permission.granted) {
     // Camera permissions are not granted yet
     return (
       <View style={styles.container}>
-        <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
+        <Text style={{ textAlign: "center" }}>We need your permission to show the camera</Text>
         <Button onPress={requestPermission} title="grant permission" />
       </View>
-    );
+    )
   }
 
   function toggleCameraType() {
-    setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
+    setType((current) => (current === CameraType.back ? CameraType.front : CameraType.back))
   }
 
   async function takePicture() {
     if (cameraRef.current) {
-      const photo = await cameraRef.current.takePictureAsync({ base64: true });
-      identifyPlant(photo.base64);
+      const photo = await cameraRef.current.takePictureAsync({ base64: true })
+      identifyPlant(photo.base64)
     }
   }
 
+  async function chatgpt(plantName) {
+    const result = await openai.post("https://api.openai.com/v1/completions", {
+      model: "text-davinci-003",
+      prompt: `Comment entretenir cette plante le nom est anglais: ${plantName}? je veux que tu reponde sous ce format plante: "nom de la plante seulement en frnacais". Explications : "comment entretenir la plante" `,
+      //temperature: 0.6,
+      max_tokens: 175,
+      n: 1,
+    })
+  
+    setResponse(result.data.choices[0].text)
+  }
+  
   async function identifyPlant(imageBase64) {
-    const apiKey = "Os8HOo2WdCGszoy2QsorUVBZYEMw32FPNmKrrz3i6Oe6dxdCsG";
-    const url = "https://api.plant.id/v2/identify";
-
+    const apiKey = "Os8HOo2WdCGszoy2QsorUVBZYEMw32FPNmKrrz3i6Oe6dxdCsG"
+    const url = "https://api.plant.id/v2/identify"
+  
     const requestBody = JSON.stringify({
       api_key: apiKey,
       images: [imageBase64],
       organs: ["leaf"],
-    });
-
+    })
+  
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -59,21 +73,23 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
           "Content-Type": "application/json",
         },
         body: requestBody,
-      });
-
+      })
+  
       if (response.ok) {
-        const data = await response.json();
-        console.log("Plant identification result:", data);
+        const data = await response.json()
+        console.log("Plant identification result:", data)
         if (data.suggestions && data.suggestions.length > 0) {
-          setIdentifiedPlant(data.suggestions[0]);
+          setIdentifiedPlant(data.suggestions[0])
+          chatgpt(data.suggestions[0].plant_details.scientific_name)  // call chatgpt with the plant name
         }
       } else {
-        console.error("Failed to send request to Plant.id API. Status:", response.status);
+        console.error("Failed to send request to Plant.id API. Status:", response.status)
       }
     } catch (error) {
-      console.error("Error identifying plant:", error);
+      console.error("Error identifying plant:", error)
     }
   }
+  
 
   return (
     <Screen style={$root} preset="scroll">
@@ -87,14 +103,17 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
           </TouchableOpacity>
         </View>
       </Camera>
-      {identifiedPlant && (
+      {/* {identifiedPlant && (
         <View style={styles.resultContainer}>
-          <Text style={styles.resultText}>Scientific Name: {identifiedPlant.plant_details.scientific_name}</Text>
+          <Text style={styles.resultText}>
+            Scientific Name: {identifiedPlant.plant_details.scientific_name}
+          </Text>
           <Text style={styles.resultText}>Probability: {identifiedPlant.probability}</Text>
         </View>
-      )}
+      )} */}
+        <Text>{response}</Text>
     </Screen>
-  );
+  )
 })
 
 const $root: ViewStyle = {
@@ -104,36 +123,36 @@ const $root: ViewStyle = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   camera: {
     flex: 1,
   },
   buttonContainer: {
     flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
+    flexDirection: "row",
+    backgroundColor: "transparent",
     margin: 64,
   },
   button: {
     flex: 1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
+    alignSelf: "flex-end",
+    alignItems: "center",
   },
   text: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
   },
   resultContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 16,
     marginTop: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   resultText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: 'black'
+    fontWeight: "bold",
+    color: "black",
   },
-});
+})

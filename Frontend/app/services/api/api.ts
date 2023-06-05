@@ -14,6 +14,19 @@ import type {
   ApiConfig,
 } from "./api.types"
 
+
+import axios from 'axios';
+
+const openai = axios.create({
+  baseURL: 'https://api.openai.com/v1',
+  headers: {
+    'Authorization': `Bearer ${'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'}`,
+    'Content-Type': 'application/json'
+  }
+});
+
+export default openai;
+
 /**
  * Configuring the apisauce instance.
  */
