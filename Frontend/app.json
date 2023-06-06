@@ -8,9 +8,9 @@
     "scheme": "frontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/app-icon-all.png",
+    "icon": "./assets/images/logoepsi.png",
     "splash": {
-      "image": "./assets/images/splash-logo-all.png",
+      "image": "./assets/images/logoepsi.png",
       "resizeMode": "contain",
       "backgroundColor": "#191015"
     },
@@ -35,14 +35,14 @@
       }
     },
     "ios": {
-      "icon": "./assets/images/app-icon-ios.png",
+      "icon": "./assets/images/logoepsi.png",
       "supportsTablet": true,
       "bundleIdentifier": "com.frontend",
       "splash": {
-        "image": "./assets/images/splash-logo-ios-mobile.png",
+        "image": "./assets/images/logoepsi.png",
         "tabletImage": "./assets/images/splash-logo-ios-tablet.png",
         "resizeMode": "contain",
-        "backgroundColor": "#191015"
+        "backgroundColor": "#fff"
       }
     },
     "web": {
