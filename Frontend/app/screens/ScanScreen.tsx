@@ -24,6 +24,7 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
   const [loading, setLoading] = useState(false)
   const [plantName, setPlantName] = useState("")
   const [plantExplanation, setPlantExplanation] = useState("")
+  const [plantPhoto, setPplantPhoto] = useState("")
   const [showCard, setShowCard] = useState(true)
 
   if (!permission) {
@@ -56,7 +57,7 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
       localisation: "test",
       longitude: location.coords.longitude,
       latitude: location.coords.latitude,
-      photo: "test",
+      photo: plantPhoto,
     }
 
     try {
@@ -96,7 +97,7 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
   async function chatgpt(plantName) {
     const result = await openai.post("https://api.openai.com/v1/completions", {
       model: "text-davinci-003",
-      prompt: `Comment entretenir cette plante le nom est anglais: ${plantName}? je veux que tu me reponde en deux phrase sous ce format. Plante :  "nom de la plante en langue française". Explications : "tu mets la réponse comment entretenir" `,
+      prompt: `Comment entretenir cette plante le nom est anglais: ${plantName}? je veux que tu me reponde en deux phrase sous ce format. Plante :  "nom de la plante". Explications : "tu mets la réponse comment entretenir" `,
       //temperature: 0.6,
       max_tokens: 175,
       n: 1,
@@ -115,6 +116,8 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
       api_key: apiKey,
       images: [imageBase64],
       organs: ["leaf"],
+      plant_details: ["wiki_image"],
+      plant_language : "fr",
     })
 
     try {
@@ -131,7 +134,8 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
         console.log("Plant identification result:", data)
         if (data.suggestions && data.suggestions.length > 0) {
           setIdentifiedPlant(data.suggestions[0])
-          chatgpt(data.suggestions[0].plant_details.scientific_name)
+          chatgpt(data.suggestions[0].plant_name)
+          setPplantPhoto(data.suggestions[0].plant_details.wiki_image.value)
         }
       } else {
         console.error("Failed to send request to Plant.id API. Status:", response.status)
@@ -203,7 +207,7 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
-    height: 300,
+    height: 400,
     left: 0,
     right: 0,
     top: 0,

@@ -7,21 +7,28 @@ import { Screen, Text } from "app/components";
 import MapView, { Marker, Callout } from 'react-native-maps';
 import { StyleSheet, View } from 'react-native';
 import axios from "axios";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface MapScreenProps extends NativeStackScreenProps<AppStackScreenProps<"Map">> {}
 
 export const MapScreen: FC<MapScreenProps> = observer(function MapScreen() {
   const [plants, setPlants] = useState([]);
 
-  useEffect(() => {
-    axios.get("http://172.20.10.5:8000/api/posts")
-      .then((response) => {
-        setPlants(response.data["hydra:member"]);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchPlants = async () => {
+        try {
+          const response = await axios.get("http://172.20.10.5:8000/api/posts");
+          setPlants(response.data["hydra:member"]);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+  
+      fetchPlants();
+    }, [])
+  );
+  
 
   return (
     <View style={styles.container}>

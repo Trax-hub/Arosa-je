@@ -44,13 +44,17 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
         posts.map((post) => (
           <Card
             key={post.id}
+            style={cardStyle}  // Apply the style here
             verticalAlignment="center"
-            LeftComponent={<Button 
-              preset="reversed" 
-              text="Découvrir"
-              style={{ backgroundColor: '#2F5E3D' }} 
-              textStyle={{ color: '#FFFFFF' }} 
-            />}
+            LeftComponent={
+              <AutoImage
+                maxWidth={80}
+                style={{ alignSelf: "center" }}
+                source={{
+                  uri: post.photo,
+                }}
+              />
+            }
             heading={post.title}
             content={post.description}
           />
@@ -64,4 +68,8 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
 const $root: ViewStyle = {
   flex: 1,
   backgroundColor: '#F8FFF8',
+}
+
+const cardStyle: ViewStyle = {
+  margin: 10,  // Add 10 units of space around each card
 }
