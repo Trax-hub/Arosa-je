@@ -18,7 +18,7 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
 
   const fetchPosts = () => {
     // Récupère les données lors du chargement du composant
-    axios.get("http://172.20.10.5:8000/api/posts")
+    axios.get("http://172.20.10.2:8000/api/posts")
       .then((response) => {
         // met à jour le state avec les données récupérées
         setPosts(response.data['hydra:member'])
