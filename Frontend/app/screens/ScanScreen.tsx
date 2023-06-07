@@ -36,17 +36,16 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
     // Camera permissions are not granted yet
     return (
       <View style={styles.container}>
-        <Text style={{ textAlign: "center" }}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <Text style={{ textAlign: "center" }}>Nous avons besoin de votre permission pour montrer la caméra</Text>
+        <Button onPress={requestPermission} title="donner la permission" />
       </View>
     )
   }
 
   async function handlePublish() {
     const location = await getLocation()
-
     if (!location) {
-      console.error("Location could not be determined")
+      console.error("L'emplacement n'a pas pu être déterminé")
       Alert.alert("Erreur", "La localisation n'a pas pu être déterminée.")
       return
     }
@@ -61,7 +60,7 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
     }
 
     try {
-      const response = await axios.post("http://172.20.10.2:8000/api/posts", plantData)
+      const response = await axios.post("http://192.168.1.66:8000/api/posts", plantData)
       console.log(response.data)
       Alert.alert("Succès", "La publication a réussi.")
       setShowCard(false) // Hide card
@@ -108,8 +107,9 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
     setPlantExplanation(responseParts[1].trim())
     setLoading(false)
   }
+
   async function identifyPlant(imageBase64) {
-    const apiKey = "Os8HOo2WdCGszoy2QsorUVBZYEMw32FPNmKrrz3i6Oe6dxdCsG"
+    const apiKey = "ktBodLzbwbLM7KIU4Iw3YZXdFiLkNmTYRUpdS3NZ3XcwLlhSOi"
     const url = "https://api.plant.id/v2/identify"
 
     const requestBody = JSON.stringify({
@@ -163,6 +163,7 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
         textStyle={styles.spinnerTextStyle}
       />
 
+
       {/* {identifiedPlant && (
         <View style={styles.resultContainer}>
           <Text style={styles.resultText}>
@@ -181,7 +182,8 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
             <Button
               preset="reversed"
               text="Publier"
-              onPress={handlePublish}
+              onPress={
+                handlePublish}
               style={{ backgroundColor: "#2F5E3D" }}
               textStyle={{ color: "#FFFFFF" }}
             />

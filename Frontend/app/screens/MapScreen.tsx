@@ -18,7 +18,7 @@ export const MapScreen: FC<MapScreenProps> = observer(function MapScreen() {
     React.useCallback(() => {
       const fetchPlants = async () => {
         try {
-          const response = await axios.get("http://172.20.10.2:8000/api/posts");
+          const response = await axios.get("http://192.168.1.66:8000/api/posts");
           setPlants(response.data["hydra:member"]);
         } catch (error) {
           console.error(error);

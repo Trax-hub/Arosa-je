@@ -32,8 +32,8 @@ const Tab = createBottomTabNavigator()
  *   https://reactnavigation.org/docs/typescript/#organizing-types
  */
 export type AppStackParamList = {
-  Welcome: undefined
-  Home: undefined
+
+  Accueil: undefined
   // 🔥 Your screens go here
   Scan: undefined
   Conseils: undefined
@@ -58,7 +58,7 @@ const Drawer = createDrawerNavigator()
 const AppStack = observer(function AppStack() {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Accueil"
       screenOptions={{
         headerShown: true,
         headerStyle: {
