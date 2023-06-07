@@ -86,19 +86,19 @@ const AppStack = observer(function AppStack() {
         component={Screens.CommentsScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="hands-helping" color={color} size={size} /> // Remplacez 'chatbubbles' par l'icône que vous voulez pour 'Conseils'
+            <FontAwesome5 name="hands-helping" color={color} size={size} /> 
           ),
         }}
       />
       <Tab.Screen name="Scan" component={Screens.ScanScreen} options={{
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="camera" color={color} size={size} /> // Remplacez 'chatbubbles' par l'icône que vous voulez pour 'Conseils'
+            <FontAwesome5 name="camera" color={color} size={size} />
           ),
         }}/>
 
       <Tab.Screen name="Carte" component={Screens.MapScreen} options={{
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="map" color={color} size={size} /> // Remplacez 'chatbubbles' par l'icône que vous voulez pour 'Conseils'
+            <FontAwesome5 name="map" color={color} size={size} />
           ),
         }}/>
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}

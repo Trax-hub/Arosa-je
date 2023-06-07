@@ -8,6 +8,10 @@ import { useNavigation } from "@react-navigation/native";
 
 interface HomeScreenProps extends NativeStackScreenProps<AppStackScreenProps<"Home">> {}
 
+const navigation = useNavigation();
+  
+// Define your handler function
+
 // Get the window width
 const windowWidth = Dimensions.get('window').width;
 
@@ -35,7 +39,7 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen() {
             style={{ backgroundColor: '#2F5E3D' }} 
             textStyle={{ color: '#FFFFFF' }} 
           />}
-        />
+        ></Card>
         <Card
           verticalAlignment="center"
           heading="Carte interactive"
