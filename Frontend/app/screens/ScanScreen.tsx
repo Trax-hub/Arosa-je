@@ -60,7 +60,7 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
     }
 
     try {
-      const response = await axios.post("http://192.168.1.66:8000/api/posts", plantData)
+      const response = await axios.post("http://172.20.10.2:8000/api/posts", plantData)
       console.log(response.data)
       Alert.alert("Succès", "La publication a réussi.")
       setShowCard(false) // Hide card

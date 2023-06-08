@@ -7,7 +7,7 @@
 import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 import { observer } from "mobx-react-lite"
-import React from "react"
+import React, { useState } from "react"
 import { useColorScheme } from "react-native"
 import * as Screens from "app/screens"
 import Config from "../config"
@@ -15,7 +15,7 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { colors } from "app/theme"
 import { createDrawerNavigator } from "@react-navigation/drawer"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { FontAwesome5  } from "@expo/vector-icons"
+import { FontAwesome5, AntDesign } from "@expo/vector-icons"
 
 const Tab = createBottomTabNavigator()
 /**
@@ -32,13 +32,14 @@ const Tab = createBottomTabNavigator()
  *   https://reactnavigation.org/docs/typescript/#organizing-types
  */
 export type AppStackParamList = {
-
+  Login: undefined
   Accueil: undefined
   // 🔥 Your screens go here
   Scan: undefined
   Conseils: undefined
   Carte: undefined
-  // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  Test: undefined
+	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
 /**
@@ -56,9 +57,10 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
 const Stack = createNativeStackNavigator<AppStackParamList>()
 const Drawer = createDrawerNavigator()
 const AppStack = observer(function AppStack() {
+
   return (
     <Tab.Navigator
-      initialRouteName="Accueil"
+      initialRouteName="Login"
       screenOptions={{
         headerShown: true,
         headerStyle: {
@@ -72,36 +74,47 @@ const AppStack = observer(function AppStack() {
       }}
     >
       <Tab.Screen
+        name="Login"
+        component={Screens.LoginScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => <AntDesign name="login" color={color} size={size} />,
+        }}
+      />
+      <Tab.Screen
         name="Accueil"
         component={Screens.HomeScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="home" color={color} size={size} />
-          ),
+          tabBarIcon: ({ color, size }) => <FontAwesome5 name="home" color={color} size={size} />,
         }}
       />
-      {/*a* 🔥 Your screens go here */}
       <Tab.Screen
         name="Conseils"
         component={Screens.CommentsScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="hands-helping" color={color} size={size} /> // Remplacez 'chatbubbles' par l'icône que vous voulez pour 'Conseils'
+            <FontAwesome5 name="hands-helping" color={color} size={size} />
           ),
         }}
       />
-      <Tab.Screen name="Scan" component={Screens.ScanScreen} options={{
+      <Tab.Screen
+        name="Scan"
+        component={Screens.ScanScreen}
+        options={{
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="camera" color={color} size={size} /> // Remplacez 'chatbubbles' par l'icône que vous voulez pour 'Conseils'
+            <FontAwesome5 name="camera" color={color} size={size} /> 
           ),
-        }}/>
+        }}
+      />
 
-      <Tab.Screen name="Carte" component={Screens.MapScreen} options={{
+      <Tab.Screen
+        name="Carte"
+        component={Screens.MapScreen}
+        options={{
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="map" color={color} size={size} /> // Remplacez 'chatbubbles' par l'icône que vous voulez pour 'Conseils'
+            <FontAwesome5 name="map" color={color} size={size} /> 
           ),
-        }}/>
-      {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
+        }}
+      />
     </Tab.Navigator>
   )
 })

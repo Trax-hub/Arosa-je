@@ -5,6 +5,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { AppStackScreenProps } from "app/navigators"
 import { AutoImage, Button, Card, Screen, Text } from "app/components"
 import axios from "axios"
+import { useStores } from "app/models"
 
 interface CommentsScreenProps extends NativeStackScreenProps<AppStackScreenProps<"Comments">> {}
 
@@ -12,14 +13,14 @@ import { useNavigation } from '@react-navigation/native';
 import Spinner from "react-native-loading-spinner-overlay"
 
 // Inside your component
-export const CommentsScreen: FC<CommentsScreenProps> = observer(function CommentsScreen() {
+export const CommentsScreen: FC<CommentsScreenProps> = observer(function CommentsScreen() {  
   // State pour stocker les données des posts
   const [posts, setPosts] = useState([])
   const navigation = useNavigation();
 
   const fetchPosts = () => {
     // Récupère les données lors du chargement du composant
-    axios.get("http://192.168.1.66:8000/api/posts")
+    axios.get("http://172.20.10.2:8000/api/posts")
       .then((response) => {
         // met à jour le state avec les données récupérées
         setPosts(response.data['hydra:member'])
