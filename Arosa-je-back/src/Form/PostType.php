@@ -13,9 +13,7 @@ class PostType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('description')
-            ->add('localisation')
-            ->add('plant')
+            ->add('content')
             ->add('photo')
         ;
     }

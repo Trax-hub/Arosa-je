@@ -27,6 +27,7 @@ class CommentController extends AbstractController
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
+        $comment->setUser($this->getUser());
 
         if ($form->isSubmitted() && $form->isValid()) {
             $commentRepository->save($comment, true);

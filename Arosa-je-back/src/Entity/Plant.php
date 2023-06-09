@@ -3,13 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Repository\PlantesRepository;
+use App\Repository\PlantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PlantesRepository::class)]
+#[ORM\Entity(repositoryClass: PlantRepository::class)]
 #[ApiResource]
 class Plant
 {
@@ -19,23 +18,30 @@ class Plant
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    private ?string $name = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(length: 255)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $image = [];
-
-    #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'plant')]
-    private Collection $posts;
+    #[ORM\Column(length: 255)]
+    private ?string $photo = null;
 
     #[ORM\ManyToOne(inversedBy: 'plants')]
-    private ?User $users = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    #[ORM\OneToMany(mappedBy: 'plant', targetEntity: Comment::class)]
+    private Collection $comments;
+
+    #[ORM\Column(length: 255)]
+    private ?string $latitude = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $longitude = null;
 
     public function __construct()
     {
-        $this->posts = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -43,14 +49,14 @@ class Plant
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getName(): ?string
     {
-        return $this->title;
+        return $this->name;
     }
 
-    public function setTitle(string $title): self
+    public function setName(string $name): self
     {
-        $this->title = $title;
+        $this->name = $name;
 
         return $this;
     }
@@ -67,59 +73,87 @@ class Plant
         return $this;
     }
 
-    public function getImage(): array
+    public function getPhoto(): ?string
     {
-        return $this->image;
+        return $this->photo;
     }
 
-    public function setImage(array $image): self
+    public function setPhoto(string $photo): self
     {
-        $this->image = $image;
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Post>
+     * @return Collection<int, Comment>
      */
-    public function getPosts(): Collection
+    public function getComments(): Collection
     {
-        return $this->posts;
+        return $this->comments;
     }
 
-    public function addPost(Post $post): self
+    public function addComment(Comment $comment): self
     {
-        if (!$this->posts->contains($post)) {
-            $this->posts->add($post);
-            $post->addPlant($this);
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setPlant($this);
         }
 
         return $this;
     }
 
-    public function removePost(Post $post): self
+    public function removeComment(Comment $comment): self
     {
-        if ($this->posts->removeElement($post)) {
-            $post->removePlant($this);
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getPlant() === $this) {
+                $comment->setPlant(null);
+            }
         }
 
         return $this;
     }
 
-    public function getUsers(): ?User
+    public function getLatitude(): ?string
     {
-        return $this->users;
+        return $this->latitude;
     }
 
-    public function setUsers(?User $users): self
+    public function setLatitude(string $latitude): self
     {
-        $this->users = $users;
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?string
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(string $longitude): self
+    {
+        $this->longitude = $longitude;
 
         return $this;
     }
 
     public function __toString(): string
     {
-        return $this->title ;
+        return $this->name;
     }
+
 }

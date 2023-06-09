@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/post')]
+#[Route('/botaniste/post')]
 class PostController extends AbstractController
 {
     #[Route('/', name: 'app_post_index', methods: ['GET'])]
@@ -27,6 +27,7 @@ class PostController extends AbstractController
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
+        $post->setUser($this->getUser());
 
         if ($form->isSubmitted() && $form->isValid()) {
             $postRepository->save($post, true);

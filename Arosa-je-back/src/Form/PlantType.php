@@ -12,11 +12,11 @@ class PlantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title')
+            ->add('name')
             ->add('description')
-            ->add('image')
-            ->add('posts')
-            ->add('users')
+            ->add('latitude')
+            ->add('longitude')
+            ->add('photo')
         ;
     }
 

@@ -12,16 +12,24 @@
                 <td>{{ plant.id }}</td>
             </tr>
             <tr>
-                <th>Title</th>
-                <td>{{ plant.title }}</td>
+                <th>Name</th>
+                <td>{{ plant.name }}</td>
             </tr>
             <tr>
                 <th>Description</th>
                 <td>{{ plant.description }}</td>
             </tr>
             <tr>
-                <th>Image</th>
-                <td>{{ plant.image ? plant.image|join(', ') : '' }}</td>
+                <th>Latitude</th>
+                <td>{{ plant.latitude }}</td>
+            </tr>
+            <tr>
+                <th>Longitude</th>
+                <td>{{ plant.longitude }}</td>
+            </tr>
+            <tr>
+                <th>Photo</th>
+                <td>{{ plant.photo }}</td>
             </tr>
         </tbody>
     </table>

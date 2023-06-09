@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Photo;
+use App\Entity\Plant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Photo>
+ * @extends ServiceEntityRepository<Plant>
  *
- * @method Photo|null find($id, $lockMode = null, $lockVersion = null)
- * @method Photo|null findOneBy(array $criteria, array $orderBy = null)
- * @method Photo[]    findAll()
- * @method Photo[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Plant|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Plant|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Plant[]    findAll()
+ * @method Plant[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PhotoRepository extends ServiceEntityRepository
+class PlantRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Photo::class);
+        parent::__construct($registry, Plant::class);
     }
 
-    public function save(Photo $entity, bool $flush = false): void
+    public function save(Plant $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class PhotoRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Photo $entity, bool $flush = false): void
+    public function remove(Plant $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class PhotoRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Photo[] Returns an array of Photo objects
+//     * @return Plant[] Returns an array of Plant objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class PhotoRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Photo
+//    public function findOneBySomeField($value): ?Plant
 //    {
 //        return $this->createQueryBuilder('p')
 //            ->andWhere('p.exampleField = :val')

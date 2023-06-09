@@ -17,30 +17,31 @@ class Comment
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $content = null;
+    private ?string $comment = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
-    private ?Post $post = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
-    private ?User $users = null;
+    private ?Plant $plant = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getContent(): ?string
+    public function getComment(): ?string
     {
-        return $this->content;
+        return $this->comment;
     }
 
-    public function setContent(string $content): self
+    public function setComment(string $comment): self
     {
-        $this->content = $content;
+        $this->comment = $comment;
 
         return $this;
     }
@@ -57,33 +58,32 @@ class Comment
         return $this;
     }
 
-    public function getPost(): ?Post
+    public function getUser(): ?User
     {
-        return $this->post;
+        return $this->user;
     }
 
-    public function setPost(?Post $post): self
+    public function setUser(?User $user): self
     {
-        $this->post = $post;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getUsers(): ?User
+    public function getPlant(): ?Plant
     {
-        return $this->users;
+        return $this->plant;
     }
 
-    public function setUsers(?User $users): self
+    public function setPlant(?Plant $plant): self
     {
-        $this->users = $users;
+        $this->plant = $plant;
 
         return $this;
     }
+
     public function __toString(): string
     {
-        return $this->content ;
+        return $this->comment;
     }
-
-
 }

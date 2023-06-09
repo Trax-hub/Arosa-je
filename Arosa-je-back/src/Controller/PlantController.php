@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Plant;
 use App\Form\PlantType;
-use App\Repository\PlantesRepository;
+use App\Repository\PlantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,23 +13,24 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/plant')]
 class PlantController extends AbstractController
 {
-    #[Route('/', name: 'app_plant_index', methods: ['GET'])]
-    public function index(PlantesRepository $plantesRepository): Response
+    #[Route('/', name: 'app_plant_index', methods: ['GET', 'POST'])]
+    public function index(PlantRepository $plantRepository): Response
     {
         return $this->render('plant/index.html.twig', [
-            'plants' => $plantesRepository->findAll(),
+            'plants' => $plantRepository->findAll(),
         ]);
     }
 
     #[Route('/new', name: 'app_plant_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, PlantesRepository $plantesRepository): Response
+    public function new(Request $request, PlantRepository $plantRepository): Response
     {
         $plant = new Plant();
         $form = $this->createForm(PlantType::class, $plant);
         $form->handleRequest($request);
+        $plant->setUser($this->getUser());
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $plantesRepository->save($plant, true);
+            $plantRepository->save($plant, true);
 
             return $this->redirectToRoute('app_plant_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -49,13 +50,13 @@ class PlantController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_plant_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Plant $plant, PlantesRepository $plantesRepository): Response
+    public function edit(Request $request, Plant $plant, PlantRepository $plantRepository): Response
     {
         $form = $this->createForm(PlantType::class, $plant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $plantesRepository->save($plant, true);
+            $plantRepository->save($plant, true);
 
             return $this->redirectToRoute('app_plant_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -67,10 +68,10 @@ class PlantController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_plant_delete', methods: ['POST'])]
-    public function delete(Request $request, Plant $plant, PlantesRepository $plantesRepository): Response
+    public function delete(Request $request, Plant $plant, PlantRepository $plantRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$plant->getId(), $request->request->get('_token'))) {
-            $plantesRepository->remove($plant, true);
+            $plantRepository->remove($plant, true);
         }
 
         return $this->redirectToRoute('app_plant_index', [], Response::HTTP_SEE_OTHER);

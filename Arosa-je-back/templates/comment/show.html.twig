@@ -12,12 +12,12 @@
                 <td>{{ comment.id }}</td>
             </tr>
             <tr>
-                <th>Content</th>
-                <td>{{ comment.content }}</td>
+                <th>Comment</th>
+                <td>{{ comment.comment }}</td>
             </tr>
             <tr>
                 <th>Date</th>
-                <td>{{ comment.date ? comment.date|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ comment.date ? comment.date|date('Y-m-d') : '' }}</td>
             </tr>
         </tbody>
     </table>

@@ -9,9 +9,11 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Title</th>
+                <th>Name</th>
                 <th>Description</th>
-                <th>Image</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Photo</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -19,9 +21,11 @@
         {% for plant in plants %}
             <tr>
                 <td>{{ plant.id }}</td>
-                <td>{{ plant.title }}</td>
+                <td>{{ plant.name }}</td>
                 <td>{{ plant.description }}</td>
-                <td>{{ plant.image ? plant.image|join(', ') : '' }}</td>
+                <td>{{ plant.latitude }}</td>
+                <td>{{ plant.longitude }}</td>
+                <td>{{ plant.photo }}</td>
                 <td>
                     <a href="{{ path('app_plant_show', {'id': plant.id}) }}">show</a>
                     <a href="{{ path('app_plant_edit', {'id': plant.id}) }}">edit</a>
@@ -29,7 +33,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="7">no records found</td>
             </tr>
         {% endfor %}
         </tbody>
