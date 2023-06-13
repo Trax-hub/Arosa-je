@@ -1,74 +1,69 @@
-import React, { FC, useState } from "react"
-import { observer } from "mobx-react-lite"
-import { View, TextInput, StyleSheet, TouchableOpacity, Text } from "react-native"
-import { NativeStackScreenProps } from "@react-navigation/native-stack"
-import { AppStackScreenProps } from "app/navigators"
-import { Screen } from "app/components"
-import { useNavigation } from "@react-navigation/native"
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { AppStackScreenProps } from 'app/navigators';
+import { observer } from 'mobx-react-lite';
+import React, { FC } from 'react';
+import {Alert, Button, StyleSheet, Text, View} from 'react-native';
+import {useAuth0, Auth0Provider} from 'react-native-auth0';
 
-interface LoginScreenProps extends NativeStackScreenProps<AppStackScreenProps<"Login">> {}
 
-export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+interface LoginScreenProps extends NativeStackScreenProps<AppStackScreenProps<"Login">> {} 
+const Home = () => {
+  const {authorize, clearSession, user, error, getCredentials} = useAuth0();
 
-  // Pull in navigation via hook
-  const navigation = useNavigation()
+  const onLogin = async () => {
+    try {
+      await authorize({scope: 'openid profile email'}, {customScheme: 'auth0.com.auth0samples'});
+      let credentials = await getCredentials();
+      Alert.alert('AccessToken: ' + credentials.accessToken);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-  const handleLogin = () => {
-    // Handle your login logic here
-    // If login is successful, you can navigate to another screen
-    // navigation.navigate('Home')
-  }
+  const loggedIn = user !== undefined && user !== null;
+
+  const onLogout = async () => {
+    try {
+      await clearSession({customScheme: 'auth0.com.auth0samples'});
+    } catch (e) {
+      console.log('Log out cancelled');
+    }
+  };
 
   return (
-    <Screen style={styles.container}>
-      <View>
-        <TextInput
-          style={styles.input}
-          placeholder="Adresse mail"
-          placeholderTextColor="gray"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Mot de passe"
-          placeholderTextColor="gray"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Connexion</Text>
-        </TouchableOpacity>
-      </View>
-    </Screen>
-  )
-})
+    <View style={styles.container}>
+      <Text style={styles.header}> Auth0Sample - Login </Text>
+      {user && <Text>You are logged in as {user.name}</Text>}
+      {!user && <Text>You are not logged in</Text>}
+      {error && <Text>{error.message}</Text>}
+      <Button
+        onPress={loggedIn ? onLogout : onLogin}
+        title={loggedIn ? 'Log Out' : 'Log In'}
+      />
+    </View>
+  );
+};
+
+export const LoginScreen: FC<LoginScreenProps> = observer(function CommentsScreen() {
+
+  return (
+    <Auth0Provider domain={"dev-swankylwozi6yh0f.us.auth0.com"} clientId={"SMPtSVWbLv9pyaP5b0ObYgII7YMdtZZO"}>
+      <Home />
+    </Auth0Provider>
+  );
+});
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 16,
-    backgroundColor: "#F8FFF8",
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingLeft: 8,
-  },
-  button: {
-    backgroundColor: '#286641',
-    padding: 10,
     alignItems: 'center',
-    marginBottom: 12,
+    backgroundColor: '#F5FCFF',
   },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 18,
+  header: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
   },
 });
+
