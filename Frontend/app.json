@@ -1,0 +1,60 @@
+{
+  "name": "Frontend",
+  "displayName": "Frontend",
+  "expo": {
+    "permissions": ["CAMERA"],
+    "name": "Frontend",
+    "slug": "Frontend",
+    "scheme": "frontend",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/logoepsi.png",
+    "splash": {
+      "image": "./assets/images/logoepsi.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#191015"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "jsEngine": "hermes",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "icon": "./assets/images/app-icon-android-legacy.png",
+      "package": "com.frontend",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/app-icon-android-adaptive-foreground.png",
+        "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
+      },
+      "splash": {
+        "image": "./assets/images/splash-logo-android-universal.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#191015"
+      }
+    },
+    "ios": {
+      "icon": "./assets/images/logoepsi.png",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.frontend",
+      "splash": {
+        "image": "./assets/images/logoepsi.png",
+        "tabletImage": "./assets/images/splash-logo-ios-tablet.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#fff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/images/app-icon-web-favicon.png",
+      "splash": {
+        "image": "./assets/images/splash-logo-web.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#191015"
+      }
+    },
+    "plugins": [
+      "expo-localization"
+    ]
+  }
+}
