@@ -1,40 +1,25 @@
 import React, { FC, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle } from "react-native"
+import { ViewStyle, StyleSheet } from "react-native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { AppStackScreenProps } from "app/navigators"
 import { AutoImage, Button, Card, Screen, Text } from "app/components"
 import axios from "axios"
 import { useStores } from "app/models"
+import { useNavigation } from "@react-navigation/native"
+import Spinner from "react-native-loading-spinner-overlay"
 
 interface CommentsScreenProps extends NativeStackScreenProps<AppStackScreenProps<"Comments">> {}
 
-import { useNavigation } from '@react-navigation/native';
-import Spinner from "react-native-loading-spinner-overlay"
-
-// Inside your component
 export const CommentsScreen: FC<CommentsScreenProps> = observer(function CommentsScreen() {
   
-  // State pour stocker les données des posts
-  const [posts, setPosts] = useState([])
+  const { apiStore } = useStores();
   const navigation = useNavigation();
 
-  const fetchPosts = () => {
-    // Récupère les données lors du chargement du composant
-    axios.get(process.env.REACT_APP_API_URL)
-      .then((response) => {
-        // met à jour le state avec les données récupérées
-        setPosts(response.data['hydra:member'])
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  }
-
   useEffect(() => {
-    fetchPosts();
+    apiStore.fetchConseils();
     const unsubscribe = navigation.addListener('focus', () => {
-      fetchPosts();
+      apiStore.fetchConseils();
     });
 
     return unsubscribe;
@@ -44,7 +29,7 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
     <Screen style={$root} preset="scroll">
       {
         // Itérer sur les posts et créer une carte pour chaque
-        posts.map((post) => (
+        apiStore.posts.map((post) => (
           <Card
             key={post.id}
             style={cardStyle}  // Apply the style here
@@ -59,14 +44,19 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
               />
             }
             heading={post.title}
-            content={post.description}
+            content={post.content}
           />
         ))
       }
-
+    <Spinner
+        visible={apiStore.loading}
+        textContent={"Chargement..."}
+        textStyle={styles.spinnerTextStyle}
+      />
     </Screen>
   )
 })
+
 
 
 const $root: ViewStyle = {
@@ -77,3 +67,9 @@ const $root: ViewStyle = {
 const cardStyle: ViewStyle = {
   margin: 10,  // Add 10 units of space around each card
 }
+
+const styles = StyleSheet.create({
+  spinnerTextStyle: {
+    color: "#FFF",
+  },
+})
