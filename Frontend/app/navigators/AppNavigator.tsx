@@ -16,6 +16,7 @@ import { colors } from "app/theme"
 import { createDrawerNavigator } from "@react-navigation/drawer"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { FontAwesome5, AntDesign } from "@expo/vector-icons"
+import { useStores } from "app/models"
 
 const Tab = createBottomTabNavigator()
 /**
@@ -57,6 +58,7 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
 const Stack = createNativeStackNavigator<AppStackParamList>()
 const Drawer = createDrawerNavigator()
 const AppStack = observer(function AppStack() {
+  const { apiStore } = useStores();
 
   return (
     <Tab.Navigator
@@ -73,51 +75,55 @@ const AppStack = observer(function AppStack() {
         },
       }}
     >
-      <Tab.Screen
-        name="Login"
-        component={Screens.LoginScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => <AntDesign name="login" color={color} size={size} />,
-        }}
-      />
-      <Tab.Screen
-        name="Accueil"
-        component={Screens.HomeScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => <FontAwesome5 name="home" color={color} size={size} />,
-        }}
-      />
-      <Tab.Screen
-        name="Conseils"
-        component={Screens.CommentsScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="hands-helping" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Scan"
-        component={Screens.ScanScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="camera" color={color} size={size} /> 
-          ),
-        }}
-      />
-
-      <Tab.Screen
-        name="Carte"
-        component={Screens.MapScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="map" color={color} size={size} /> 
-          ),
-        }}
-      />
+      {apiStore.isAuthentified ? (
+        <>
+          <Tab.Screen
+            name="Accueil"
+            component={Screens.HomeScreen}
+            options={{
+              tabBarIcon: ({ color, size }) => <FontAwesome5 name="home" color={color} size={size} />,
+            }}
+          />
+          <Tab.Screen
+            name="Conseils"
+            component={Screens.CommentsScreen}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <FontAwesome5 name="hands-helping" color={color} size={size} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Scan"
+            component={Screens.ScanScreen}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <FontAwesome5 name="camera" color={color} size={size} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Carte"
+            component={Screens.MapScreen}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <FontAwesome5 name="map" color={color} size={size} />
+              ),
+            }}
+          />
+        </>
+      ) : (
+        <Tab.Screen
+          name="Login"
+          component={Screens.LoginScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => <AntDesign name="login" color={color} size={size} />,
+          }}
+        />
+      )}
     </Tab.Navigator>
-  )
-})
+  );
+});
 
 export interface NavigationProps
   extends Partial<React.ComponentProps<typeof NavigationContainer>> {}
