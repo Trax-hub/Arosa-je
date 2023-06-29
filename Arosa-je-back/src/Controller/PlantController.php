@@ -49,27 +49,32 @@ class PlantController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_plant_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Plant $plant, PlantRepository $plantRepository): Response
-    {
-        $form = $this->createForm(PlantType::class, $plant);
-        $form->handleRequest($request);
+//    #[Route('/{id}/edit', name: 'app_plant_edit', methods: ['GET', 'POST'])]
+//  public function edit(Request $request, Plant $plant, PlantRepository $plantRepository): Response
+//  {
+//    // on ne l'utilise pas
+//        $form = $this->createForm(PlantType::class, $plant);
+//        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $plantRepository->save($plant, true);
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $plantRepository->save($plant, true);
 
-            return $this->redirectToRoute('app_plant_index', [], Response::HTTP_SEE_OTHER);
-        }
+//            return $this->redirectToRoute('app_plant_index', [], Response::HTTP_SEE_OTHER);
+//        }
 
-        return $this->renderForm('plant/edit.html.twig', [
-            'plant' => $plant,
-            'form' => $form,
-        ]);
-    }
+//        return $this->renderForm('plant/edit.html.twig', [
+//            'plant' => $plant,
+//            'form' => $form,
+//        ]);
+//    }
 
     #[Route('/{id}', name: 'app_plant_delete', methods: ['POST'])]
     public function delete(Request $request, Plant $plant, PlantRepository $plantRepository): Response
     {
+        if( null === $this->getUser() || ["ROLES_ADMIN"] !== $this->getUser()->getRoles()){
+            return $this->redirectToRoute('login');  // voir pour une erreur 401
+        }
+
         if ($this->isCsrfTokenValid('delete'.$plant->getId(), $request->request->get('_token'))) {
             $plantRepository->remove($plant, true);
         }
