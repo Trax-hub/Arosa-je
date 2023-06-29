@@ -8,4 +8,3 @@ export * from "./CommentsScreen"
 export * from "./MapScreen"
 export * from "./LoginScreen"
 
-export * from "./LoginScreen"

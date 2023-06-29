@@ -10,19 +10,6 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        login:
-            pattern: ^/api/login
-            stateless: true
-            json_login:
-                check_path: /api/login_check
-                success_handler: App\Security\AuthenticationSuccessHandler
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
-
-        api:
-            pattern: ^/api
-            stateless: true
-            jwt: ~
-
         main:
             lazy: true
             provider: app_user_provider
@@ -35,8 +22,6 @@ security:
                 path: logout
                 target: logout
     access_control:
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/utilisateur, roles: [ROLE_USER, ROLE_BOTANISTE] }
         - { path: ^/botaniste, roles: ROLE_BOTANISTE }
         - { path: ^/admin, roles: ROLE_ADMIN }
