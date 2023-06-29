@@ -36,9 +36,11 @@ security:
                 target: logout
     access_control:
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/utilisateur, roles: [ROLE_USER, ROLE_BOTANISTE] }
-        - { path: ^/botaniste, roles: ROLE_BOTANISTE }
+        - { path: ^/user, roles: ROLE_ADMIN }
+        - { path: ^/post, roles: ROLE_BOTANISTE }
+        - { path: ^/poster, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/plant, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/comment, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:
