@@ -43,7 +43,7 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
                 maxWidth={80}
                 style={{ alignSelf: "center" }}
                 source={{
-                  uri: comment.plant,
+                  uri: comment.plant.id,
                 }}
               />
             }
@@ -55,7 +55,7 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
                 >Supprimer</Button>
               )
             }
-            heading={comment.plant}
+            heading={comment.plant.name}
             content={comment.comment}
           />
         ))

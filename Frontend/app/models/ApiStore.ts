@@ -13,8 +13,16 @@ export const ApiStoreModel = types
         id: types.number,
         comment: types.string,
         date: types.string,
-        user: types.string,
-        plant: types.string,
+        user: types.model({
+          id: types.maybeNull(types.string),
+          type: types.maybeNull(types.string),
+          pseudo: types.string,
+        }),
+        plant: types.model({
+          id: types.maybeNull(types.string),
+          type: types.maybeNull(types.string),
+          name: types.string,
+        }),
       })
     ), []),
     plants: types.optional(types.array(

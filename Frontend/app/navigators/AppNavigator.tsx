@@ -41,7 +41,7 @@ export type AppStackParamList = {
   Carte: undefined
   Test: undefined
   NewComment: undefined
-	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
 /**
@@ -97,24 +97,31 @@ const AppStack = observer(function AppStack() {
               headerRight: () => (
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('Ajouter un conseil');
+                    navigation.navigate("Ajouter un conseil")
                   }}
                 >
-                  <FontAwesome5 name="plus-circle" size={24} color="#2F5E3D" style={{ marginRight: 15 }} />
+                  <FontAwesome5
+                    name="plus-circle"
+                    size={24}
+                    color="#2F5E3D"
+                    style={{ marginRight: 15 }}
+                  />
                 </TouchableOpacity>
               ),
             })}
           />
+          {apiStore.isUser && (
+            <Tab.Screen
+              name="Scan"
+              component={Screens.ScanScreen}
+              options={{
+                tabBarIcon: ({ color, size }) => (
+                  <FontAwesome5 name="camera" color={color} size={size} />
+                ),
+              }}
+            />
+          )}
 
-          <Tab.Screen
-            name="Scan"
-            component={Screens.ScanScreen}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <FontAwesome5 name="camera" color={color} size={size} />
-              ),
-            }}
-          />
           <Tab.Screen
             name="Carte"
             component={Screens.MapScreen}
