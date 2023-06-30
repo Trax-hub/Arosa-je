@@ -8,7 +8,26 @@ import axios from "axios";
 export const ApiStoreModel = types
   .model("ApiStore")
   .props({
-    posts: types.optional(types.array(types.frozen()), []),
+    comments: types.optional(types.array(
+      types.model({
+        id: types.number,
+        comment: types.string,
+        date: types.string,
+        user: types.string,
+        plant: types.string,
+      })
+    ), []),
+    plants: types.optional(types.array(
+      types.model({
+        id: types.number,
+        name: types.string,
+        description: types.string,
+        photo: types.string,
+        user: types.string,
+        latitude: types.number,
+        longitude: types.number,
+      })
+    ), []),
     token: types.maybeNull(types.string),
     user: types.optional(
       types.model({
@@ -37,29 +56,16 @@ export const ApiStoreModel = types
     },
   }))
   .actions((self) => ({
-    setConseils(posts: any) {
-      self.posts = posts;
+    setConseils(comments: any) {
+      self.comments = comments;
     },
-  }))
-  .actions((self) => ({
-    fetchConseils: flow(function* () {
-      self.setLoading(false);
-      try {
-        const response = yield axios.get("http://10.60.104.105:8000/api/posts");
-        self.posts = response.data["hydra:member"];
-      } catch (error) {
-        console.error(error);
-        self.setLoading(false);
-      }
-      self.setLoading(false);
-    }),
   }))
   .actions((self) => ({
     login: flow(function* (username: string, password: string) {
       self.setLoading(true);
       try {
         const response = yield axios.post(
-          "http://10.60.104.105:8000/api/login_check",
+          "http://10.60.104.56:8000/api/login_check",
           { username, password }
         );
         const { token, user } = response.data;
@@ -72,7 +78,43 @@ export const ApiStoreModel = types
       }
       self.setLoading(false);
     }),
-  }));
+  }))
+
+  .actions((self) => ({
+    fetchConseils: flow(function* () {
+      self.setLoading(true);
+      try {
+        const response = yield axios.get("http://10.60.104.56:8000/api/comments", {
+          headers: {
+            Authorization: `Bearer ${self.token}`
+          }
+        });
+        self.comments = response.data["hydra:member"];
+      } catch (error) {
+        console.error(error);
+        // Handle error
+      }
+      self.setLoading(false);
+    }),  
+  }))
+
+  .actions((self) => ({
+    fetchPlants: flow(function* () {
+      self.setLoading(true);
+      try {
+        const response = yield axios.get("http://10.60.104.56:8000/api/plants", {
+          headers: {
+            Authorization: `Bearer ${self.token}`
+          }
+        });
+        self.plants = response.data["hydra:member"];
+      } catch (error) {
+        console.error(error);
+        // Handle error
+      }
+      self.setLoading(false);
+    }),  
+  }))
 
 export interface ApiStore extends Instance<typeof ApiStoreModel> {}
 export interface ApiStoreSnapshotOut extends SnapshotOut<typeof ApiStoreModel> {}

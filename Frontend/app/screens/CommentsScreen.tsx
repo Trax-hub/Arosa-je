@@ -29,9 +29,9 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
     <Screen style={$root} preset="scroll">
       {
         // Itérer sur les posts et créer une carte pour chaque
-        apiStore.posts.map((post) => (
+        apiStore.comments.map((comment) => (
           <Card
-            key={post.id}
+            key={comment.id}
             style={cardStyle}  // Apply the style here
             verticalAlignment="center"
             LeftComponent={
@@ -39,12 +39,12 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
                 maxWidth={80}
                 style={{ alignSelf: "center" }}
                 source={{
-                  uri: post.photo,
+                  uri: comment.plant,
                 }}
               />
             }
-            heading={post.title}
-            content={post.content}
+            heading={comment.plant}
+            content={comment.comment}
           />
         ))
       }
