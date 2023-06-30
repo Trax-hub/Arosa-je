@@ -33,11 +33,11 @@ class Plant
     #[ORM\OneToMany(mappedBy: 'plant', targetEntity: Comment::class)]
     private Collection $comments;
 
-    #[ORM\Column(length: 255)]
-    private ?string $latitude = null;
+    #[ORM\Column]
+    private ?float $latitude = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $longitude = null;
+    #[ORM\Column]
+    private ?float $longitude = null;
 
     public function __construct()
     {
@@ -127,33 +127,34 @@ class Plant
         return $this;
     }
 
-    public function getLatitude(): ?string
+
+    public function __toString(): string
+    {
+        return $this->name;
+    }
+
+    public function getLatitude(): ?float
     {
         return $this->latitude;
     }
 
-    public function setLatitude(string $latitude): self
+    public function setLatitude(float $latitude): self
     {
         $this->latitude = $latitude;
 
         return $this;
     }
 
-    public function getLongitude(): ?string
+    public function getLongitude(): ?float
     {
         return $this->longitude;
     }
 
-    public function setLongitude(string $longitude): self
+    public function setLongitude(float $longitude): self
     {
         $this->longitude = $longitude;
 
         return $this;
-    }
-
-    public function __toString(): string
-    {
-        return $this->name;
     }
 
 }
