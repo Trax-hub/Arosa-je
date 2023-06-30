@@ -1,5 +1,6 @@
 /** @type {import('@babel/core').TransformOptions['plugins']} */
 const plugins = [
+  ["module:react-native-dotenv"],
   [
     /** Enables baseUrl: "./" option in tsconfig.json to work @see https://github.com/entwicklerstube/babel-plugin-root-import */
     "babel-plugin-root-import",

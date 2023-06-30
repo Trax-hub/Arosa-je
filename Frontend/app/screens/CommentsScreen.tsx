@@ -25,6 +25,10 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
     return unsubscribe;
   }, [navigation])
 
+  const handleDeleteComment = async (commentId: number) => {
+    await apiStore.deleteComment(commentId);
+  }
+
   return (
     <Screen style={$root} preset="scroll">
       {
@@ -42,6 +46,14 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
                   uri: comment.plant,
                 }}
               />
+            }
+            RightComponent={
+              apiStore.isBotaniste && (
+                <Button
+                  style={{ alignSelf: "center" }}
+                  onPress={() => handleDeleteComment(comment.id)}
+                >Supprimer</Button>
+              )
             }
             heading={comment.plant}
             content={comment.comment}

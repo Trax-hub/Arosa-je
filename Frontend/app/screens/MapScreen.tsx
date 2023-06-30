@@ -9,6 +9,8 @@ import { StyleSheet, View } from 'react-native';
 import axios from "axios";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useStores } from "app/models";
+import Spinner from "react-native-loading-spinner-overlay"
+
 
 interface MapScreenProps extends NativeStackScreenProps<AppStackScreenProps<"Map">> {}
 
@@ -42,6 +44,11 @@ export const MapScreen: FC<MapScreenProps> = observer(function MapScreen() {
           </Marker>
         ))}
       </MapView>
+      <Spinner
+        visible={apiStore.loading}
+        textContent={"Chargement..."}
+        textStyle={styles.spinnerTextStyle}
+      />
     </View>
   );
 });
@@ -54,4 +61,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  spinnerTextStyle: {
+    color: "#FFF",
+  },
 });
+

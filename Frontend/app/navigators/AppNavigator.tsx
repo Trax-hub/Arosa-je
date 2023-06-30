@@ -8,7 +8,7 @@ import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 import { observer } from "mobx-react-lite"
 import React, { useState } from "react"
-import { useColorScheme } from "react-native"
+import { TouchableOpacity, useColorScheme } from "react-native"
 import * as Screens from "app/screens"
 import Config from "../config"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
@@ -40,6 +40,7 @@ export type AppStackParamList = {
   Conseils: undefined
   Carte: undefined
   Test: undefined
+  NewComment: undefined
 	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
@@ -58,7 +59,7 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
 const Stack = createNativeStackNavigator<AppStackParamList>()
 const Drawer = createDrawerNavigator()
 const AppStack = observer(function AppStack() {
-  const { apiStore } = useStores();
+  const { apiStore } = useStores()
 
   return (
     <Tab.Navigator
@@ -81,18 +82,30 @@ const AppStack = observer(function AppStack() {
             name="Accueil"
             component={Screens.HomeScreen}
             options={{
-              tabBarIcon: ({ color, size }) => <FontAwesome5 name="home" color={color} size={size} />,
+              tabBarIcon: ({ color, size }) => (
+                <FontAwesome5 name="home" color={color} size={size} />
+              ),
             }}
           />
           <Tab.Screen
             name="Conseils"
             component={Screens.CommentsScreen}
-            options={{
+            options={({ navigation }) => ({
               tabBarIcon: ({ color, size }) => (
                 <FontAwesome5 name="hands-helping" color={color} size={size} />
               ),
-            }}
+              headerRight: () => (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('Ajouter un conseil');
+                  }}
+                >
+                  <FontAwesome5 name="plus-circle" size={24} color="#2F5E3D" style={{ marginRight: 15 }} />
+                </TouchableOpacity>
+              ),
+            })}
           />
+
           <Tab.Screen
             name="Scan"
             component={Screens.ScanScreen}
@@ -111,6 +124,7 @@ const AppStack = observer(function AppStack() {
               ),
             }}
           />
+          <Tab.Screen name="Ajouter un conseil" component={Screens.NewCommentScreen} />
         </>
       ) : (
         <Tab.Screen
@@ -122,8 +136,8 @@ const AppStack = observer(function AppStack() {
         />
       )}
     </Tab.Navigator>
-  );
-});
+  )
+})
 
 export interface NavigationProps
   extends Partial<React.ComponentProps<typeof NavigationContainer>> {}

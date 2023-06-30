@@ -15,7 +15,8 @@
       "backgroundColor": "#191015"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "enabled": false
     },
     "jsEngine": "hermes",
     "assetBundlePatterns": [
