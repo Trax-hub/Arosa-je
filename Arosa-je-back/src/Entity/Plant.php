@@ -26,6 +26,7 @@ class Plant
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
+    #[Groups(['read'])]
     #[ORM\Column(length: 255)]
     private ?string $photo = null;
 

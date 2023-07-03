@@ -15,7 +15,7 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { colors } from "app/theme"
 import { createDrawerNavigator } from "@react-navigation/drawer"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { FontAwesome5, AntDesign } from "@expo/vector-icons"
+import { FontAwesome5, AntDesign, FontAwesome } from "@expo/vector-icons"
 import { useStores } from "app/models"
 
 const Tab = createBottomTabNavigator()
@@ -41,7 +41,8 @@ export type AppStackParamList = {
   Carte: undefined
   Test: undefined
   NewComment: undefined
-  // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  Messagerie: undefined
+	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
 /**
@@ -83,7 +84,7 @@ const AppStack = observer(function AppStack() {
             component={Screens.HomeScreen}
             options={{
               tabBarIcon: ({ color, size }) => (
-                <FontAwesome5 name="home" color={color} size={size} />
+                <AntDesign name="home" color={color} size={size} />
               ),
             }}
           />
@@ -92,7 +93,7 @@ const AppStack = observer(function AppStack() {
             component={Screens.CommentsScreen}
             options={({ navigation }) => ({
               tabBarIcon: ({ color, size }) => (
-                <FontAwesome5 name="hands-helping" color={color} size={size} />
+                <FontAwesome name="handshake-o" color={color} size={size} />
               ),
               headerRight: () => (
                 <TouchableOpacity
@@ -116,7 +117,7 @@ const AppStack = observer(function AppStack() {
               component={Screens.ScanScreen}
               options={{
                 tabBarIcon: ({ color, size }) => (
-                  <FontAwesome5 name="camera" color={color} size={size} />
+                  <AntDesign name="camerao" color={color} size={size} />
                 ),
               }}
             />
@@ -131,6 +132,13 @@ const AppStack = observer(function AppStack() {
               ),
             }}
           />
+                  <Tab.Screen
+          name="Messagerie"
+          component={Screens.MessagerieScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => <AntDesign name="mail" color={color} size={size} />,
+          }}
+        />
           <Tab.Screen name="Ajouter un conseil" component={Screens.NewCommentScreen} />
         </>
       ) : (

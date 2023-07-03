@@ -43,7 +43,7 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
                 maxWidth={80}
                 style={{ alignSelf: "center" }}
                 source={{
-                  uri: comment.plant.id,
+                  uri: comment.plant.photo,
                 }}
               />
             }

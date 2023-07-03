@@ -14,14 +14,15 @@ export const ApiStoreModel = types
         comment: types.string,
         date: types.string,
         user: types.model({
-          id: types.maybeNull(types.string),
+          id: types.maybeNull(types.number),
           type: types.maybeNull(types.string),
           pseudo: types.string,
         }),
         plant: types.model({
-          id: types.maybeNull(types.string),
+          id: types.maybeNull(types.number),
           type: types.maybeNull(types.string),
           name: types.string,
+          photo: types.maybeNull(types.string),
         }),
       })
     ), []),
@@ -49,7 +50,6 @@ export const ApiStoreModel = types
     isAuthentified: types.optional(types.boolean, false),
     isUser: types.optional(types.boolean, false),
     isBotaniste: types.optional(types.boolean, false),
-    cacher: types.optional(types.boolean, false),
   })
   .volatile(() => ({
     loading: false,
@@ -86,14 +86,14 @@ export const ApiStoreModel = types
       self.setLoading(true);
       try {
         const response = yield axios.post(
-          "http://10.60.104.56:8000/api/login_check",
+          "http://172.20.10.2:8000/api/login_check",
           { username, password }
         );
-        const { token, user } = response.data; // extraction de token et user à partir de response.data.token
-        self.token = token.token;
+        const { token, user } = response.data.token; // extraction de token et user à partir de response.data.token
+        self.token = token;
         self.user = user;
-        self.isUser = token.user.role.includes('ROLE_USER'); // définir isUser en fonction du rôle de l'utilisateur
-        self.isBotaniste = token.user.role.includes('ROLE_BOTANISTE'); // définir isUser en fonction du rôle de l'utilisateur
+        self.isUser = user.role.includes('ROLE_USER'); // définir isUser en fonction du rôle de l'utilisateur
+        self.isBotaniste = user.role.includes('ROLE_BOTANISTE'); // définir isUser en fonction du rôle de l'utilisateur
         self.setisAuthentified(true)
       } catch (error) {
         console.error(error);
@@ -107,7 +107,7 @@ export const ApiStoreModel = types
     fetchConseils: flow(function* () {
       self.setLoading(false);
       try {
-        const response = yield axios.get("http://10.60.104.56:8000/api/comments", {
+        const response = yield axios.get("http://172.20.10.2:8000/api/comments", {
           headers: {
             Authorization: `Bearer ${self.token}`
           }
@@ -125,7 +125,7 @@ export const ApiStoreModel = types
     deleteComment: flow(function* (commentId: number) {
       self.setLoading(true);
       try {
-        const response = yield axios.delete(`http://10.60.104.56:8000/api/comments/${commentId}`, {
+        const response = yield axios.delete(`http://172.20.10.2:8000/api/comments/${commentId}`, {
           headers: {
             Authorization: `Bearer ${self.token}`
           }
@@ -144,7 +144,7 @@ export const ApiStoreModel = types
     fetchPlants: flow(function* () {
       self.setLoading(true);
       try {
-        const response = yield axios.get("http://10.60.104.56:8000/api/plants", {
+        const response = yield axios.get("http://172.20.10.2:8000/api/plants", {
           headers: {
             Authorization: `Bearer ${self.token}`
           }
@@ -157,6 +157,52 @@ export const ApiStoreModel = types
       self.setLoading(false);
     }),  
   }))
+
+  .actions((self) => ({
+    addComment: flow(function* (comment: string, date: string, user: string, plant: string) {
+      self.setLoading(true);
+      try {
+        const response = yield axios.post(
+          "http://172.20.10.2:8000/api/comments",
+          { 
+            comment, 
+            date, 
+            user, 
+            plant
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${self.token}`
+            }
+          }
+        );
+        self.fetchConseils();
+      } catch (error) {
+        console.error(error);
+        // Handle add comment error
+      }
+      self.setLoading(false);
+    }),  
+  }))
+
+  .actions((self) => ({
+    resetStore: () => {
+      self.comments.clear();
+      self.plants.clear();
+      self.token = null;
+      self.user.id = null;
+      self.user.username = null;
+      self.user.email = null;
+      self.user.role.clear();
+      self.isAuthentified = false;
+      self.isUser = false;
+      self.isBotaniste = false;
+      self.loading = false;
+    },
+  }))
+
+
+  
 
 export interface ApiStore extends Instance<typeof ApiStoreModel> {}
 export interface ApiStoreSnapshotOut extends SnapshotOut<typeof ApiStoreModel> {}

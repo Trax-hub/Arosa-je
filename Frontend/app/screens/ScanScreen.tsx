@@ -181,7 +181,7 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
           FooterComponent={
             <Button
               preset="reversed"
-              text="Publier"
+              text="Publier ma plante"
               onPress={
                 handlePublish}
               style={{ backgroundColor: "#2F5E3D" }}

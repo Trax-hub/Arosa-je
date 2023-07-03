@@ -23,14 +23,21 @@ export const NewCommentScreen: FC<NewCommentScreenProps> = observer(function New
   const handleSubmit = () => {
     const newComment = {
       comment: comment,
-      date: new Date().toISOString().split("T")[0], // Utilise la date actuelle
-      user: apiStore.user.id,
-      plant: plant,
+      date: "2023-06-12", // Utilise la date actuelle
+      user: `/api/users/${apiStore.user.id}`,
+      plant: `/api/plants/${plant}`,
     }
-
-    // Envoie le newComment au serveur ou effectue d'autres actions nécessaires
-    console.log(newComment)
-  }
+  
+    // Envoie le newComment au serveur 
+    apiStore.addComment(newComment.comment, newComment.date, newComment.user, newComment.plant)
+      .then(() => {
+        console.log('Commentaire ajouté avec succès');
+        console.log(newComment.plant)
+      })
+      .catch((error) => {
+        console.error('Erreur lors de l\'ajout du commentaire : ', error);
+      });
+  }  
 
   return (
     <Screen style={$root} preset="scroll">
@@ -46,7 +53,7 @@ export const NewCommentScreen: FC<NewCommentScreenProps> = observer(function New
         style={textInputStyle}
       >
         {apiStore.plants.map((plant) => (
-          <Picker.Item key={plant.id} label={plant.name} value={plant.name} />
+          <Picker.Item key={plant.id} label={plant.name} value={plant.id} />
         ))}
       </Picker>
       <Button title="Publier" onPress={handleSubmit} />
