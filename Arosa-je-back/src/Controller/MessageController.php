@@ -48,31 +48,31 @@ class MessageController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_message_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Message $message, MessageRepository $messageRepository): Response
-    {
-        $form = $this->createForm(MessageType::class, $message);
-        $form->handleRequest($request);
+ //   #[Route('/{id}/edit', name: 'app_message_edit', methods: ['GET', 'POST'])]
+    // public function edit(Request $request, Message $message, MessageRepository $messageRepository): Response
+//    {
+//        $form = $this->createForm(MessageType::class, $message);
+//        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $messageRepository->save($message, true);
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $messageRepository->save($message, true);
 
-            return $this->redirectToRoute('app_message_index', [], Response::HTTP_SEE_OTHER);
-        }
+//            return $this->redirectToRoute('app_message_index', [], Response::HTTP_SEE_OTHER);
+    //      }
 
-        return $this->renderForm('message/edit.html.twig', [
-            'message' => $message,
-            'form' => $form,
-        ]);
-    }
+    //  return $this->renderForm('message/edit.html.twig', [
+    //      'message' => $message,
+    //      'form' => $form,
+    //  ]);
+    //}
 
-    #[Route('/{id}', name: 'app_message_delete', methods: ['POST'])]
-    public function delete(Request $request, Message $message, MessageRepository $messageRepository): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$message->getId(), $request->request->get('_token'))) {
-            $messageRepository->remove($message, true);
-        }
+    //   #[Route('/{id}', name: 'app_message_delete', methods: ['POST'])]
+    //  public function delete(Request $request, Message $message, MessageRepository $messageRepository): Response
+    // {
+    //   if ($this->isCsrfTokenValid('delete'.$message->getId(), $request->request->get('_token'))) {
+    //       $messageRepository->remove($message, true);
+    //   }
 
-        return $this->redirectToRoute('app_message_index', [], Response::HTTP_SEE_OTHER);
-    }
+//        return $this->redirectToRoute('app_message_index', [], Response::HTTP_SEE_OTHER);
+    //  }
 }

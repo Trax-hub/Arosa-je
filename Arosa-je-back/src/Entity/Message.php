@@ -18,75 +18,80 @@ class Message
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read'])]
+    #[Groups(['read', 'write'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['read', 'write'])]
-    private ?string $message = null;
-
-    #[ORM\ManyToOne(inversedBy: 'messages')]
-    #[Groups(['read', 'write'])]
-    private ?User $expediteur = null;
-
-    #[ORM\ManyToOne(inversedBy: 'messages')]
-    #[Groups(['read', 'write'])]
-    private ?User $destinataire = null;
+    private ?string $content = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['read', 'write'])]
-    private ?\DateTimeInterface $date = null;
+    private ?\DateTimeInterface $Horodatage = null;
+
+    #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[Groups(['read', 'write'])]
+    private ?Conversation $conversation = null;
+
+    #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[Groups(['read', 'write'])]
+    private ?User $user = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getMessage(): ?string
+    public function getContent(): ?string
     {
-        return $this->message;
+        return $this->content;
     }
 
-    public function setMessage(string $message): self
+    public function setContent(string $content): self
     {
-        $this->message = $message;
+        $this->content = $content;
 
         return $this;
     }
 
-    public function getExpediteur(): ?User
+    public function getHorodatage(): ?\DateTimeInterface
     {
-        return $this->expediteur;
+        return $this->Horodatage;
     }
 
-    public function setExpediteur(?User $expediteur): self
+    public function setHorodatage(\DateTimeInterface $Horodatage): self
     {
-        $this->expediteur = $expediteur;
+        $this->Horodatage = $Horodatage;
 
         return $this;
     }
 
-    public function getDestinataire(): ?User
+    public function getConversation(): ?Conversation
     {
-        return $this->destinataire;
+        return $this->conversation;
     }
 
-    public function setDestinataire(?User $destinataire): self
+    public function setConversation(?Conversation $conversation): self
     {
-        $this->destinataire = $destinataire;
+        $this->conversation = $conversation;
 
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getUser(): ?User
     {
-        return $this->date;
+        return $this->user;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setUser(?User $user): self
     {
-        $this->date = $date;
+        $this->user = $user;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->content ;
     }
 }
