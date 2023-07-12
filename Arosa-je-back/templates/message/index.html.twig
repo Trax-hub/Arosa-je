@@ -9,8 +9,8 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Message</th>
-                <th>Date</th>
+                <th>Content</th>
+                <th>Horodatage</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -18,11 +18,11 @@
         {% for message in messages %}
             <tr>
                 <td>{{ message.id }}</td>
-                <td>{{ message.message }}</td>
-                <td>{{ message.date ? message.date|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ message.content }}</td>
+                <td>{{ message.Horodatage ? message.Horodatage|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
                     <a href="{{ path('app_message_show', {'id': message.id}) }}">show</a>
-                    <a href="{{ path('app_message_edit', {'id': message.id}) }}">edit</a>
+                    {# <a href="{{ path('app_message_edit', {'id': message.id}) }}">edit</a> #}
                 </td>
             </tr>
         {% else %}

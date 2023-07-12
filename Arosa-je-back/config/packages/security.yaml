@@ -41,6 +41,8 @@ security:
         - { path: ^/poster, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/plant, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/comment, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/conversation, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/message, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:
