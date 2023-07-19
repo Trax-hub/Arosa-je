@@ -41,7 +41,9 @@ export type AppStackParamList = {
   Carte: undefined
   NewComment: undefined
   Messagerie: undefined
-  Conversation: undefined	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  Conversation: undefined
+  Dashboard: undefined
+  // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
   NewMessage: undefined
 }
 
@@ -66,11 +68,9 @@ function CommentStackNavigator() {
     <CommentStack.Navigator screenOptions={{ headerShown: false }}>
       <CommentStack.Screen name="ConseilsStack" component={Screens.CommentsScreen} />
       <CommentStack.Screen name="Ajouter un conseil" component={Screens.NewCommentScreen} />
-
     </CommentStack.Navigator>
   )
 }
-
 
 const MessagerieStack = createNativeStackNavigator()
 
@@ -83,7 +83,6 @@ function MessagerieStackNavigator() {
     </MessagerieStack.Navigator>
   )
 }
-
 
 const AppStack = observer(function AppStack() {
   const { apiStore } = useStores()
@@ -105,80 +104,97 @@ const AppStack = observer(function AppStack() {
     >
       {apiStore.isAuthentified ? (
         <>
-          <Tab.Screen
-            name="Accueil"
-            component={Screens.HomeScreen}
-            options={{
-              tabBarIcon: ({ color, size }) => <AntDesign name="home" color={color} size={size} />,
-            }}
-          />
-          <Tab.Screen
-            name="Conseils"
-            component={CommentStackNavigator}
-            options={({ navigation }) => ({
-              tabBarIcon: ({ color, size }) => (
-                <FontAwesome name="handshake-o" color={color} size={size} />
-              ),
-              headerRight: () =>
-                apiStore.isBotaniste && (
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate("Ajouter un conseil")
-                    }}
-                  >
-                    <FontAwesome5
-                      name="plus-circle"
-                      size={24}
-                      color="#2F5E3D"
-                      style={{ marginRight: 15 }}
-                    />
-                  </TouchableOpacity>
-                ),
-            })}
-          />
-          {apiStore.isUser && (
+          {apiStore.isAdmin ? (
             <Tab.Screen
-              name="Scan"
-              component={Screens.ScanScreen}
+              name="Dashboard"
+              component={Screens.DashboardScreen}
               options={{
                 tabBarIcon: ({ color, size }) => (
-                  <AntDesign name="camerao" color={color} size={size} />
+                  <AntDesign name="dashboard" color={color} size={size} />
                 ),
               }}
             />
+          ) : (
+            <>
+              <Tab.Screen
+                name="Accueil"
+                component={Screens.HomeScreen}
+                options={{
+                  tabBarIcon: ({ color, size }) => (
+                    <AntDesign name="home" color={color} size={size} />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Conseils"
+                component={CommentStackNavigator}
+                options={({ navigation }) => ({
+                  tabBarIcon: ({ color, size }) => (
+                    <FontAwesome name="handshake-o" color={color} size={size} />
+                  ),
+                  headerRight: () =>
+                    apiStore.isBotaniste && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          navigation.navigate("Ajouter un conseil")
+                        }}
+                      >
+                        <FontAwesome5
+                          name="plus-circle"
+                          size={24}
+                          color="#2F5E3D"
+                          style={{ marginRight: 15 }}
+                        />
+                      </TouchableOpacity>
+                    ),
+                })}
+              />
+              {apiStore.isUser && (
+                <Tab.Screen
+                  name="Scan"
+                  component={Screens.ScanScreen}
+                  options={{
+                    tabBarIcon: ({ color, size }) => (
+                      <AntDesign name="camerao" color={color} size={size} />
+                    ),
+                  }}
+                />
+              )}
+              <Tab.Screen
+                name="Carte"
+                component={Screens.MapScreen}
+                options={{
+                  tabBarIcon: ({ color, size }) => (
+                    <FontAwesome5 name="map" color={color} size={size} />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Messagerie"
+                component={MessagerieStackNavigator}
+                options={({ navigation }) => ({
+                  tabBarIcon: ({ color, size }) => (
+                    <AntDesign name="mail" color={color} size={size} />
+                  ),
+                  headerRight: () => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate("NewMessage")
+                      }}
+                    >
+                      <FontAwesome5
+                        name="plus-circle"
+                        size={24}
+                        color="#2F5E3D"
+                        style={{ marginRight: 15 }}
+                      />
+                    </TouchableOpacity>
+                  ),
+                })}
+              />{" "}
+            </>
           )}
 
-          <Tab.Screen
-            name="Carte"
-            component={Screens.MapScreen}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <FontAwesome5 name="map" color={color} size={size} />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="Messagerie"
-            component={MessagerieStackNavigator}
-            options={({ navigation }) => ({
-              tabBarIcon: ({ color, size }) => (
-                <AntDesign name="mail" color={color} size={size} />
-              ),
-              headerRight: () =>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate("NewMessage")
-                    }}
-                  >
-                    <FontAwesome5
-                      name="plus-circle"
-                      size={24}
-                      color="#2F5E3D"
-                      style={{ marginRight: 15 }}
-                    />
-                  </TouchableOpacity>
-            })}
-          />
           <Tab.Screen
             name="compte"
             component={Screens.MyaccountScreen}
