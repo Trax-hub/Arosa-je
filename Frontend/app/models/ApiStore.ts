@@ -79,11 +79,19 @@ export const ApiStoreModel = types
         longitude: types.number,
       })
     ), []),
+    users: types.optional(types.array(
+      types.model({
+        id: types.number,
+        email: types.string,
+        pseudo: types.string, 
+      })
+    ), []),
     token: types.maybeNull(types.string),
     isAuthentified: types.optional(types.boolean, false),
     isUser: types.optional(types.boolean, false),
     isBotaniste: types.optional(types.boolean, false),
     conversationId: types.maybeNull(types.number),
+    NewconversationId: types.maybeNull(types.number),
   })
   .volatile(() => ({
     loading: false,
@@ -122,7 +130,7 @@ export const ApiStoreModel = types
   }))
   .actions((self) => ({
     login: flow(function* (username: string, password: string) {
-      self.setLoading(false);
+      self.setLoading(true);
       try {
         const response = yield axios.post(
           "http://172.20.10.2:8000/api/login_check",
@@ -140,10 +148,37 @@ export const ApiStoreModel = types
       self.setLoading(false);
     }), 
   }))
+  .actions((self) => ({
+    addConversation: flow(function* (title: string, horodatage: string, users: string[]) {
+        self.setLoading(true);
+        try {
+            const response = yield axios.post(
+                "http://172.20.10.2:8000/api/conversations",
+                {
+                    title,
+                    horodatage,
+                    user: users,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${self.token}`
+                    }
+                }
+            );
+            self.NewconversationId = response.data.id
+            console.log("conv creer")
+        } catch (error) {
+            console.error(error);
+            // Gérer l'erreur d'ajout de conversation
+        }
+        self.setLoading(false);
+    }),  
+}))
 
   .actions((self) => ({
     sendMessage: flow(function* (content: string, user: string, conversation: string, Horodatage: string) {
       self.setLoading(true);
+      console.log(conversation)
       try {
         const response = yield axios.post(
           "http://172.20.10.2:8000/api/messages",
@@ -159,6 +194,7 @@ export const ApiStoreModel = types
               }
             }
           );
+          console.log("message envoyé")
         } catch (error) {
           console.error(error);
             // Handle add message error
@@ -170,7 +206,7 @@ export const ApiStoreModel = types
 
   .actions((self) => ({
     fetchConseils: flow(function* () {
-      self.setLoading(false);
+      self.setLoading(true);
       try {
         const response = yield axios.get("http://172.20.10.2:8000/api/comments", {
           headers: {
@@ -188,7 +224,7 @@ export const ApiStoreModel = types
 
   .actions((self) => ({
     fetchMessages: flow(function* (conversationId: number) {
-      self.setLoading(false);
+      self.setLoading(true);
       try {
         const response = yield axios.get(`http://172.20.10.2:8000/api/conversations/${conversationId}`, {
           headers: {
@@ -282,6 +318,24 @@ export const ApiStoreModel = types
           }
         });
         self.plants = response.data["hydra:member"];
+      } catch (error) {
+        //console.error(error);
+        // Handle error
+      }
+      self.setLoading(false);
+    }),  
+  }))
+
+  .actions((self) => ({
+    fetchUsers: flow(function* () {
+      self.setLoading(true);
+      try {
+        const response = yield axios.get("http://172.20.10.2:8000/api/users", {
+          headers: {
+            Authorization: `Bearer ${self.token}`
+          }
+        });
+        self.users = response.data["hydra:member"];
       } catch (error) {
         //console.error(error);
         // Handle error

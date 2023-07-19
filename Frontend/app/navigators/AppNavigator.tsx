@@ -42,6 +42,7 @@ export type AppStackParamList = {
   NewComment: undefined
   Messagerie: undefined
   Conversation: undefined	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  NewMessage: undefined
 }
 
 /**
@@ -70,6 +71,7 @@ function CommentStackNavigator() {
   )
 }
 
+
 const MessagerieStack = createNativeStackNavigator()
 
 function MessagerieStackNavigator() {
@@ -77,6 +79,7 @@ function MessagerieStackNavigator() {
     <MessagerieStack.Navigator screenOptions={{ headerShown: false }}>
       <MessagerieStack.Screen name="MessagerieStack" component={Screens.MessagerieScreen} />
       <MessagerieStack.Screen name="Conversation" component={Screens.ConversationScreen} />
+      <MessagerieStack.Screen name="NewMessage" component={Screens.NewMessageScreen} />
     </MessagerieStack.Navigator>
   )
 }
@@ -157,9 +160,24 @@ const AppStack = observer(function AppStack() {
           <Tab.Screen
             name="Messagerie"
             component={MessagerieStackNavigator}
-            options={{
-              tabBarIcon: ({ color, size }) => <AntDesign name="mail" color={color} size={size} />,
-            }}
+            options={({ navigation }) => ({
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign name="mail" color={color} size={size} />
+              ),
+              headerRight: () =>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("NewMessage")
+                    }}
+                  >
+                    <FontAwesome5
+                      name="plus-circle"
+                      size={24}
+                      color="#2F5E3D"
+                      style={{ marginRight: 15 }}
+                    />
+                  </TouchableOpacity>
+            })}
           />
           <Tab.Screen
             name="compte"
