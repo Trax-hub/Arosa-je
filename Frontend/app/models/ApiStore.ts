@@ -156,7 +156,6 @@ export const ApiStoreModel = types
   .actions((self) => ({
     fetchMessages: flow(function* (conversationId: number) {
       self.setLoading(true);
-      console.log("puceau")
       try {
         const response = yield axios.get(`http://172.20.10.2:8000/api/conversations/${conversationId}`, {
           headers: {
@@ -164,8 +163,6 @@ export const ApiStoreModel = types
           }
         });
         self.messages = response.data.messages;
-        console.log(self.messages[0].content)
-
       } catch (error) {
         console.error(error);
         self.setLoading(false);
