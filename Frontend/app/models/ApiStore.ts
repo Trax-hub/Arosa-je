@@ -29,6 +29,13 @@ export const ApiStoreModel = types
         }),
       })
     ), []),
+
+    usersConversations: types.optional(types.array(
+      types.model({
+        id: types.number,
+        pseudo: types.string,
+      })
+    ), []),
     
     comments: types.optional(types.array(
       types.model({
@@ -131,9 +138,35 @@ export const ApiStoreModel = types
         console.error(error);
       }
       self.setLoading(false);
-    }),
-    
+    }), 
   }))
+
+  .actions((self) => ({
+    sendMessage: flow(function* (content: string, user: string, conversation: string, Horodatage: string) {
+      self.setLoading(true);
+      try {
+        const response = yield axios.post(
+          "http://172.20.10.2:8000/api/messages",
+            { 
+              content, 
+              user, 
+              conversation, 
+              Horodatage
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${self.token}`
+              }
+            }
+          );
+        } catch (error) {
+          console.error(error);
+            // Handle add message error
+        }
+        self.setLoading(false);
+    }),  
+}))
+
 
   .actions((self) => ({
     fetchConseils: flow(function* () {
@@ -155,7 +188,7 @@ export const ApiStoreModel = types
 
   .actions((self) => ({
     fetchMessages: flow(function* (conversationId: number) {
-      self.setLoading(true);
+      self.setLoading(false);
       try {
         const response = yield axios.get(`http://172.20.10.2:8000/api/conversations/${conversationId}`, {
           headers: {
@@ -163,6 +196,8 @@ export const ApiStoreModel = types
           }
         });
         self.messages = response.data.messages;
+        self.usersConversations = response.data.user
+        console.log(self.usersConversations[0].pseudo)
       } catch (error) {
         console.error(error);
         self.setLoading(false);

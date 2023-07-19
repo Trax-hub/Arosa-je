@@ -63,7 +63,7 @@ const CommentStack = createNativeStackNavigator()
 function CommentStackNavigator() {
   return (
     <CommentStack.Navigator screenOptions={{ headerShown: false }}>
-      <CommentStack.Screen name="Conseils" component={Screens.CommentsScreen} />
+      <CommentStack.Screen name="ConseilsStack" component={Screens.CommentsScreen} />
       <CommentStack.Screen name="Ajouter un conseil" component={Screens.NewCommentScreen} />
 
     </CommentStack.Navigator>
@@ -75,7 +75,7 @@ const MessagerieStack = createNativeStackNavigator()
 function MessagerieStackNavigator() {
   return (
     <MessagerieStack.Navigator screenOptions={{ headerShown: false }}>
-      <MessagerieStack.Screen name="Messagerie" component={Screens.MessagerieScreen} />
+      <MessagerieStack.Screen name="MessagerieStack" component={Screens.MessagerieScreen} />
       <MessagerieStack.Screen name="Conversation" component={Screens.ConversationScreen} />
     </MessagerieStack.Navigator>
   )
