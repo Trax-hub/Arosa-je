@@ -6,11 +6,13 @@ import { AppStackScreenProps } from "app/navigators"
 import { Screen, Text } from "app/components"
 import { Picker } from "@react-native-picker/picker"
 import { useStores } from "app/models" // Supposons que useStores est un hook personnalisé qui vous permet d'accéder à vos stores MobX.
+import { useNavigation } from "@react-navigation/native"
 
 interface NewCommentScreenProps extends NativeStackScreenProps<AppStackScreenProps<"NewComment">> {}
 
 export const NewCommentScreen: FC<NewCommentScreenProps> = observer(function NewCommentScreen() {
   const { apiStore } = useStores() // Accès au store ApiStore.
+  const navigation = useNavigation();
 
   const [comment, setComment] = useState("")
   const [user, setUser] = useState("")
@@ -32,7 +34,7 @@ export const NewCommentScreen: FC<NewCommentScreenProps> = observer(function New
     apiStore.addComment(newComment.comment, newComment.date, newComment.user, newComment.plant)
       .then(() => {
         console.log('Commentaire ajouté avec succès');
-        console.log(newComment.plant)
+        navigation.goBack()
       })
       .catch((error) => {
         console.error('Erreur lors de l\'ajout du commentaire : ', error);

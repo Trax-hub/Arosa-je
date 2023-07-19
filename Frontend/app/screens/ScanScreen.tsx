@@ -12,6 +12,7 @@ import Spinner from "react-native-loading-spinner-overlay"
 import axios from "axios"
 import * as Location from "expo-location"
 import { Alert } from "react-native"
+import { useStores } from "app/models"
 
 interface ScanScreenProps extends NativeStackScreenProps<AppStackScreenProps<"Scan">> {}
 
@@ -26,6 +27,9 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
   const [plantExplanation, setPlantExplanation] = useState("")
   const [plantPhoto, setPplantPhoto] = useState("")
   const [showCard, setShowCard] = useState(true)
+  const [base64, setBase64] = useState("")
+
+  const { apiStore } = useStores() // Accès au store ApiStore.
 
   if (!permission) {
     // Camera permissions are still loading
@@ -36,13 +40,16 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
     // Camera permissions are not granted yet
     return (
       <View style={styles.container}>
-        <Text style={{ textAlign: "center" }}>Nous avons besoin de votre permission pour montrer la caméra</Text>
+        <Text style={{ textAlign: "center" }}>
+          Nous avons besoin de votre permission pour montrer la caméra
+        </Text>
         <Button onPress={requestPermission} title="donner la permission" />
       </View>
     )
   }
 
   async function handlePublish() {
+    apiStore.setLoading(true)
     const location = await getLocation()
     if (!location) {
       console.error("L'emplacement n'a pas pu être déterminé")
@@ -50,24 +57,30 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
       return
     }
 
-    const plantData = {
-      title: plantName,
+    const newPlantData = {
+      name: plantName,
       description: plantExplanation,
-      localisation: "test",
-      longitude: location.coords.longitude,
+      photo: base64,
+      user: `/api/users/${apiStore.user.id}`,
       latitude: location.coords.latitude,
-      photo: plantPhoto,
+      longitude: location.coords.longitude,
     }
 
-    try {
-      const response = await axios.post("http://192.168.254.53:8000/api/posts", plantData)
-      console.log(response.data)
-      Alert.alert("Succès", "La publication a réussi.")
-      setShowCard(false) // Hide card
-    } catch (error) {
-      console.error(error)
-      Alert.alert("Erreur", "Une erreur est survenue lors de la publication.")
-    }
+    apiStore
+      .addPlant(
+        newPlantData.name,
+        newPlantData.description,
+        newPlantData.photo,
+        newPlantData.user,
+        newPlantData.latitude,
+        newPlantData.longitude,
+      )
+      .then(() => {
+        console.log("Plante ajouté avec succès")
+      })
+      .catch((error) => {
+        console.error("Erreur lors de l'ajout de la plante : ", error)
+      })
   }
 
   async function getLocation() {
@@ -90,6 +103,7 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
       setLoading(true)
       const photo = await cameraRef.current.takePictureAsync({ base64: true })
       await identifyPlant(photo.base64)
+      setBase64(photo.base64)
     }
   }
 
@@ -117,7 +131,7 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
       images: [imageBase64],
       organs: ["leaf"],
       plant_details: ["wiki_image"],
-      plant_language : "fr",
+      plant_language: "fr",
     })
 
     try {
@@ -163,7 +177,6 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
         textStyle={styles.spinnerTextStyle}
       />
 
-
       {/* {identifiedPlant && (
         <View style={styles.resultContainer}>
           <Text style={styles.resultText}>
@@ -182,14 +195,18 @@ export const ScanScreen: FC<ScanScreenProps> = observer(function ScanScreen() {
             <Button
               preset="reversed"
               text="Publier ma plante"
-              onPress={
-                handlePublish}
+              onPress={handlePublish}
               style={{ backgroundColor: "#2F5E3D" }}
               textStyle={{ color: "#FFFFFF" }}
             />
           }
         />
       )}
+      <Spinner
+        visible={apiStore.loading}
+        textContent={"Chargement..."}
+        textStyle={styles.spinnerTextStyle}
+      />
     </Screen>
   )
 })

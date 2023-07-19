@@ -1,23 +1,42 @@
-import React, { FC } from "react"
+import React, { FC, useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle } from "react-native"
+import { ViewStyle, TouchableOpacity } from "react-native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
-import { AppStackScreenProps } from "app/navigators"
-import { Screen, Text } from "app/components"
-// import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "app/models"
+import { AppStackParamList, AppStackScreenProps } from "app/navigators"
+import { Screen, Text, Card } from "app/components"
+import { useStores } from "app/models"
 
-interface MessagerieScreenProps extends NativeStackScreenProps<AppStackScreenProps<"Messagerie">> {}
+interface MessagerieScreenProps extends NativeStackScreenProps<AppStackParamList, "Messagerie"> {}
 
-export const MessagerieScreen: FC<MessagerieScreenProps> = observer(function MessagerieScreen() {
+export const MessagerieScreen: FC<MessagerieScreenProps> = observer(({ navigation }) => {
   // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
+  const { apiStore } = useStores()
 
-  // Pull in navigation via hook
-  // const navigation = useNavigation()
+  useEffect(() => {
+    apiStore.fetchConversations()
+    console.log(apiStore.conversations)
+  }, [])
+
   return (
     <Screen style={$root} preset="scroll">
-      <Text text="messagerie" />
+      {apiStore.conversations.map((conversation, index) => {
+        // Get the last user's pseudo
+        const lastUserPseudo = conversation.user[conversation.user.length - 1]?.pseudo
+
+        return (
+          
+          <TouchableOpacity
+            key={index}
+            onPress={() => {apiStore.setconversationId(conversation.id); navigation.navigate("Conversation")}}
+          >
+            <Card heading={lastUserPseudo}>
+              {conversation.user.map((user, userIndex) => (
+                <Text key={userIndex}>{user.pseudo}</Text>
+              ))}
+            </Card>
+          </TouchableOpacity>
+        )
+      })}
     </Screen>
   )
 })

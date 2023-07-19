@@ -20,7 +20,7 @@ import axios from 'axios';
 const openai = axios.create({
   baseURL: 'https://api.openai.com/v1',
   headers: {
-    'Authorization': `Bearer ${'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'}`,
+    'Authorization': `Bearer ${'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'}`,
     'Content-Type': 'application/json'
   }
 });

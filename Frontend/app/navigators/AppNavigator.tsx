@@ -15,7 +15,7 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { colors } from "app/theme"
 import { createDrawerNavigator } from "@react-navigation/drawer"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { FontAwesome5, AntDesign, FontAwesome } from "@expo/vector-icons"
+import { FontAwesome5, AntDesign, FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons"
 import { useStores } from "app/models"
 
 const Tab = createBottomTabNavigator()
@@ -39,10 +39,9 @@ export type AppStackParamList = {
   Scan: undefined
   Conseils: undefined
   Carte: undefined
-  Test: undefined
   NewComment: undefined
   Messagerie: undefined
-	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  Conversation: undefined	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
 /**
@@ -59,6 +58,30 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createNativeStackNavigator<AppStackParamList>()
 const Drawer = createDrawerNavigator()
+const CommentStack = createNativeStackNavigator()
+
+function CommentStackNavigator() {
+  return (
+    <CommentStack.Navigator screenOptions={{ headerShown: false }}>
+      <CommentStack.Screen name="Conseils" component={Screens.CommentsScreen} />
+      <CommentStack.Screen name="Ajouter un conseil" component={Screens.NewCommentScreen} />
+
+    </CommentStack.Navigator>
+  )
+}
+
+const MessagerieStack = createNativeStackNavigator()
+
+function MessagerieStackNavigator() {
+  return (
+    <MessagerieStack.Navigator screenOptions={{ headerShown: false }}>
+      <MessagerieStack.Screen name="Messagerie" component={Screens.MessagerieScreen} />
+      <MessagerieStack.Screen name="Conversation" component={Screens.ConversationScreen} />
+    </MessagerieStack.Navigator>
+  )
+}
+
+
 const AppStack = observer(function AppStack() {
   const { apiStore } = useStores()
 
@@ -83,32 +106,31 @@ const AppStack = observer(function AppStack() {
             name="Accueil"
             component={Screens.HomeScreen}
             options={{
-              tabBarIcon: ({ color, size }) => (
-                <AntDesign name="home" color={color} size={size} />
-              ),
+              tabBarIcon: ({ color, size }) => <AntDesign name="home" color={color} size={size} />,
             }}
           />
           <Tab.Screen
             name="Conseils"
-            component={Screens.CommentsScreen}
+            component={CommentStackNavigator}
             options={({ navigation }) => ({
               tabBarIcon: ({ color, size }) => (
                 <FontAwesome name="handshake-o" color={color} size={size} />
               ),
-              headerRight: () => (
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("Ajouter un conseil")
-                  }}
-                >
-                  <FontAwesome5
-                    name="plus-circle"
-                    size={24}
-                    color="#2F5E3D"
-                    style={{ marginRight: 15 }}
-                  />
-                </TouchableOpacity>
-              ),
+              headerRight: () =>
+                apiStore.isBotaniste && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("Ajouter un conseil")
+                    }}
+                  >
+                    <FontAwesome5
+                      name="plus-circle"
+                      size={24}
+                      color="#2F5E3D"
+                      style={{ marginRight: 15 }}
+                    />
+                  </TouchableOpacity>
+                ),
             })}
           />
           {apiStore.isUser && (
@@ -132,14 +154,22 @@ const AppStack = observer(function AppStack() {
               ),
             }}
           />
-                  <Tab.Screen
-          name="Messagerie"
-          component={Screens.MessagerieScreen}
-          options={{
-            tabBarIcon: ({ color, size }) => <AntDesign name="mail" color={color} size={size} />,
-          }}
-        />
-          <Tab.Screen name="Ajouter un conseil" component={Screens.NewCommentScreen} />
+          <Tab.Screen
+            name="Messagerie"
+            component={MessagerieStackNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => <AntDesign name="mail" color={color} size={size} />,
+            }}
+          />
+          <Tab.Screen
+            name="compte"
+            component={Screens.MyaccountScreen}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <MaterialCommunityIcons name="account" color={color} size={size} />
+              ),
+            }}
+          />
         </>
       ) : (
         <Tab.Screen

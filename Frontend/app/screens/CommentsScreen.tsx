@@ -12,21 +12,20 @@ import Spinner from "react-native-loading-spinner-overlay"
 interface CommentsScreenProps extends NativeStackScreenProps<AppStackScreenProps<"Comments">> {}
 
 export const CommentsScreen: FC<CommentsScreenProps> = observer(function CommentsScreen() {
-  
-  const { apiStore } = useStores();
-  const navigation = useNavigation();
+  const { apiStore } = useStores()
+  const navigation = useNavigation()
 
   useEffect(() => {
-    apiStore.fetchConseils();
-    const unsubscribe = navigation.addListener('focus', () => {
-      apiStore.fetchConseils();
-    });
+    apiStore.fetchConseils()
+    const unsubscribe = navigation.addListener("focus", () => {
+      apiStore.fetchConseils()
+    })
 
-    return unsubscribe;
+    return unsubscribe
   }, [navigation])
 
   const handleDeleteComment = async (commentId: number) => {
-    await apiStore.deleteComment(commentId);
+    await apiStore.deleteComment(commentId)
   }
 
   return (
@@ -36,14 +35,14 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
         apiStore.comments.map((comment) => (
           <Card
             key={comment.id}
-            style={cardStyle}  // Apply the style here
+            style={cardStyle} // Apply the style here
             verticalAlignment="center"
             LeftComponent={
               <AutoImage
-                maxWidth={80}
+                maxWidth={80} // add this line
                 style={{ alignSelf: "center" }}
                 source={{
-                  uri: comment.plant.photo,
+                  uri: `data:image/jpeg;base64,${comment.plant.photo}`,
                 }}
               />
             }
@@ -52,7 +51,9 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
                 <Button
                   style={{ alignSelf: "center" }}
                   onPress={() => handleDeleteComment(comment.id)}
-                >Supprimer</Button>
+                >
+                  Supprimer
+                </Button>
               )
             }
             heading={comment.plant.name}
@@ -60,7 +61,7 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
           />
         ))
       }
-    <Spinner
+      <Spinner
         visible={apiStore.loading}
         textContent={"Chargement..."}
         textStyle={styles.spinnerTextStyle}
@@ -69,15 +70,13 @@ export const CommentsScreen: FC<CommentsScreenProps> = observer(function Comment
   )
 })
 
-
-
 const $root: ViewStyle = {
   flex: 1,
-  backgroundColor: '#F8FFF8',
+  backgroundColor: "#F8FFF8",
 }
 
 const cardStyle: ViewStyle = {
-  margin: 10,  // Add 10 units of space around each card
+  margin: 10, // Add 10 units of space around each card
 }
 
 const styles = StyleSheet.create({

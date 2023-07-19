@@ -5,9 +5,31 @@ import axios from "axios";
 /**
  * Model description here for TypeScript hints.
  */
+
 export const ApiStoreModel = types
   .model("ApiStore")
   .props({
+    user: types.optional(
+      types.model({
+        id: types.maybeNull(types.number),
+        username: types.maybeNull(types.string),
+        email: types.maybeNull(types.string),
+        role: types.optional(types.array(types.string), []),
+      }),
+      {}
+    ),
+    messages: types.optional(types.array(
+      types.model({
+        id: types.number,
+        content: types.string,
+        Horodatage: types.string,
+        user: types.model({
+          id: types.maybeNull(types.number),
+          pseudo: types.string,
+        }),
+      })
+    ), []),
+    
     comments: types.optional(types.array(
       types.model({
         id: types.number,
@@ -26,6 +48,19 @@ export const ApiStoreModel = types
         }),
       })
     ), []),
+    conversations: types.optional(types.array(
+      types.model({
+        id: types.number,
+        title: types.string,
+        horodatage: types.string,
+        user: types.array(
+          types.model({
+            id: types.maybeNull(types.number),
+            pseudo: types.string,
+          })
+        ),
+      })
+    ), []),
     plants: types.optional(types.array(
       types.model({
         id: types.number,
@@ -38,18 +73,10 @@ export const ApiStoreModel = types
       })
     ), []),
     token: types.maybeNull(types.string),
-    user: types.optional(
-      types.model({
-        id: types.maybeNull(types.number),
-        username: types.maybeNull(types.string),
-        email: types.maybeNull(types.string),
-        role: types.optional(types.array(types.string), []),
-      }),
-      {}
-    ),
     isAuthentified: types.optional(types.boolean, false),
     isUser: types.optional(types.boolean, false),
     isBotaniste: types.optional(types.boolean, false),
+    conversationId: types.maybeNull(types.number),
   })
   .volatile(() => ({
     loading: false,
@@ -59,6 +86,11 @@ export const ApiStoreModel = types
   .actions((self) => ({
     setisUser(isUser: boolean) {
       self.isUser = isUser;
+    },
+  }))
+  .actions((self) => ({
+    setconversationId(conversationId: number) {
+      self.conversationId = conversationId;
     },
   }))
   .actions((self) => ({
@@ -83,24 +115,24 @@ export const ApiStoreModel = types
   }))
   .actions((self) => ({
     login: flow(function* (username: string, password: string) {
-      self.setLoading(true);
+      self.setLoading(false);
       try {
         const response = yield axios.post(
           "http://172.20.10.2:8000/api/login_check",
           { username, password }
         );
-        const { token, user } = response.data.token; // extraction de token et user à partir de response.data.token
+        const { token, user } = response.data.token;
         self.token = token;
         self.user = user;
-        self.isUser = user.role.includes('ROLE_USER'); // définir isUser en fonction du rôle de l'utilisateur
-        self.isBotaniste = user.role.includes('ROLE_BOTANISTE'); // définir isUser en fonction du rôle de l'utilisateur
-        self.setisAuthentified(true)
+        self.isUser = user.role.includes('ROLE_USER');
+        self.isBotaniste = user.role.includes('ROLE_BOTANISTE');
+        self.setisAuthentified(true);    
       } catch (error) {
         console.error(error);
-        // Handle login error
       }
       self.setLoading(false);
     }),
+    
   }))
 
   .actions((self) => ({
@@ -122,6 +154,46 @@ export const ApiStoreModel = types
   }))
 
   .actions((self) => ({
+    fetchMessages: flow(function* (conversationId: number) {
+      self.setLoading(true);
+      console.log("puceau")
+      try {
+        const response = yield axios.get(`http://172.20.10.2:8000/api/conversations/${conversationId}`, {
+          headers: {
+            Authorization: `Bearer ${self.token}`
+          }
+        });
+        self.messages = response.data.messages;
+        console.log(self.messages[0].content)
+
+      } catch (error) {
+        console.error(error);
+        self.setLoading(false);
+      }
+      self.setLoading(false);
+    }),
+  }))
+  
+  .actions((self) => ({
+    fetchConversations: flow(function* () {
+      self.setLoading(true);
+      try {
+        const response = yield axios.get("http://172.20.10.2:8000/api/conversations", {
+          headers: {
+            Authorization: `Bearer ${self.token}`
+          }
+        });
+        // Extract the member data from the response
+        self.conversations = response.data["hydra:member"];
+      } catch (error) {
+        console.error(error);
+        self.setLoading(false);
+      }
+      self.setLoading(false);
+    }),       
+  }))
+
+  .actions((self) => ({
     deleteComment: flow(function* (commentId: number) {
       self.setLoading(true);
       try {
@@ -138,7 +210,35 @@ export const ApiStoreModel = types
       self.setLoading(false);
     }),  
   }))
+
+
   
+  .actions((self) => ({
+    addPlant: flow(function* (name: string, description: string, photo: string, user: string, latitude: number, longitude: number) {
+      try {
+        const response = yield axios.post(
+          "http://172.20.10.2:8000/api/plants",
+          { 
+            name, 
+            description, 
+            photo, 
+            user, 
+            longitude,
+            latitude, 
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${self.token}`
+            }
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        // Gérer l'erreur d'ajout de plante
+      }
+      self.setLoading(false);
+    }),  
+  }))
 
   .actions((self) => ({
     fetchPlants: flow(function* () {
