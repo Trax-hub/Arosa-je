@@ -6,6 +6,7 @@ use App\Entity\Plant;
 use App\Form\PlantType;
 use App\Repository\PlantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -47,6 +48,18 @@ class PlantController extends AbstractController
         return $this->render('plant/show.html.twig', [
             'plant' => $plant,
         ]);
+    }
+
+    #[Route('/count', name: 'app_plant_count', methods: ['GET'])]
+    public function count(PlantRepository $plantRepository): JsonResponse
+    {
+        $plants = $plantRepository->findAll();
+
+        $data = [
+            'nbPlants' => count($plants),
+        ];
+
+        return new JsonResponse($data, 200);
     }
 
 //    #[Route('/{id}/edit', name: 'app_plant_edit', methods: ['GET', 'POST'])]

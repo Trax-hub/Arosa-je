@@ -25,7 +25,7 @@ class Conversation
     #[Groups(['read', 'write'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     #[Groups(['read', 'write'])]
     private ?string $title = null;
 
