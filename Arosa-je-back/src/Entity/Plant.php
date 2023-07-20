@@ -26,8 +26,12 @@ class Plant
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
+<<<<<<< HEAD
     #[Groups(['read'])]
     #[ORM\Column(length: 255)]
+=======
+    #[ORM\Column(type: "text")]
+>>>>>>> mspr2-pierre-back
     private ?string $photo = null;
 
     #[ORM\ManyToOne(inversedBy: 'plants')]
