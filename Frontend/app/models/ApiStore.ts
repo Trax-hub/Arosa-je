@@ -127,6 +127,7 @@ export const ApiStoreModel = types
     nbUser: types.maybeNull(types.number),
     nbConversations: types.maybeNull(types.number),
     lastmessage: types.maybeNull(types.string),
+
   })
   .volatile(() => ({
     loading: false,
@@ -189,6 +190,31 @@ export const ApiStoreModel = types
       self.setLoading(false)
     }),
   }))
+
+  .actions((self) => ({
+    updateMessage: flow(function* (messageId: number, lu: boolean) {
+        self.setLoading(true);
+        try {
+            const response = yield axios.put(
+                `http://127.0.0.1:8000/api/messages/${messageId}`, 
+                {
+                    content: lu
+                }, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${self.token}`,
+                    },
+                }
+            );
+            // Mettre à jour le contenu du message dans le store
+        } catch (error) {
+            console.error(error);
+            // Gérer l'erreur de mise à jour du message
+        }
+        self.setLoading(false);
+    }),
+}))
+
   .actions((self) => ({
     addConversation: flow(function* (title: string, horodatage: string, users: string[]) {
       self.setLoading(true)

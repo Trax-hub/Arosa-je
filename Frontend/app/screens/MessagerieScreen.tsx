@@ -45,6 +45,7 @@ export const MessagerieScreen: FC<MessagerieScreenProps> = observer(({ navigatio
               onPress={() => {
                 apiStore.setconversationId(conversation.id)
                 navigation.navigate("Conversation")
+                apiStore.updateMessage(lastMessage.id, true)
               }}
             >
               <Card
