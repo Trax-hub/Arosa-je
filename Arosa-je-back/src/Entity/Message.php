@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
@@ -38,6 +39,7 @@ class Message
     private ?User $user = null;
 
     #[ORM\Column]
+    #[Groups(['read', 'write'])]
     private ?bool $lu = false;
 
     public function getId(): ?int
