@@ -70,6 +70,17 @@ export const ApiStoreModel = types
           id: types.number,
           title: types.string,
           horodatage: types.string,
+          messages: types.array(
+            types.model({
+              id: types.number,
+              content: types.string,
+              Horodatage: types.string,
+              user: types.model({
+                id: types.maybeNull(types.number),
+                pseudo: types.string,
+              }),
+            }),
+          ),
           user: types.array(
             types.model({
               id: types.maybeNull(types.number),
@@ -114,7 +125,7 @@ export const ApiStoreModel = types
     nbPlants: types.maybeNull(types.number),
     nbComments: types.maybeNull(types.number),
     nbUser: types.maybeNull(types.number),
-
+    lastmessage: types.maybeNull(types.string),
   })
   .volatile(() => ({
     loading: false,
@@ -248,7 +259,6 @@ export const ApiStoreModel = types
         })
         self.comments = response.data["hydra:member"]
         self.nbComments = response.data["hydra:totalItems"]
-
       } catch (error) {
         console.error(error)
         self.setLoading(false)
@@ -291,6 +301,7 @@ export const ApiStoreModel = types
         })
         // Extract the member data from the response
         self.conversations = response.data["hydra:member"]
+        console.log(self.conversations[0].messages[0].content)
       } catch (error) {
         console.error(error)
         self.setLoading(false)

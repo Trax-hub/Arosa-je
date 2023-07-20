@@ -7,6 +7,7 @@ import { Screen, Text, Card } from "app/components"
 import { useStores } from "app/models"
 import { useNavigation } from "@react-navigation/native"
 import Spinner from "react-native-loading-spinner-overlay"
+import { AntDesign } from '@expo/vector-icons';
 
 interface MessagerieScreenProps extends NativeStackScreenProps<AppStackParamList, "Messagerie"> {}
 
@@ -27,16 +28,21 @@ export const MessagerieScreen: FC<MessagerieScreenProps> = observer(({ navigatio
 
   return (
     <Screen style={$root} preset="scroll">
-      {apiStore.conversations.map((conversation, index) => {
-        // Get the username of the other user in the conversation
+      {apiStore.conversations.filter(conversation => 
+        conversation.user.some(user => user.id === apiStore.user.id)
+      ).map((conversation, index) => {
+
         const otherUserPseudo = conversation.user.find(user => user.pseudo !== apiStore.user.username)?.pseudo;
+
+        const sortedMessages = conversation.messages.slice().sort((a, b) => new Date(b.Horodatage).getTime() - new Date(a.Horodatage).getTime());
+        const lastMessage = sortedMessages.find(message => message.user.id == apiStore.user.id);
 
         return (
           <TouchableOpacity
             key={index}
             onPress={() => {apiStore.setconversationId(conversation.id); navigation.navigate("Conversation")}}
           >
-            <Card heading={otherUserPseudo}>
+            <Card heading={otherUserPseudo} content={lastMessage ? lastMessage.content : ""} RightComponent={<AntDesign name="right" size={18} color="black" />}>
             </Card>
           </TouchableOpacity>
         )
@@ -49,6 +55,9 @@ export const MessagerieScreen: FC<MessagerieScreenProps> = observer(({ navigatio
     </Screen>
   )
 })
+
+
+
 
 
 const $root: ViewStyle = {
