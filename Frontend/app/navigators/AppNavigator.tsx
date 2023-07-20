@@ -85,7 +85,7 @@ function MessagerieStackNavigator() {
 }
 
 const AppStack = observer(function AppStack() {
-  const { apiStore } = useStores();
+  const { apiStore } = useStores()
 
   return (
     <Tab.Navigator
@@ -192,17 +192,19 @@ const AppStack = observer(function AppStack() {
                   ),
                 })}
               />
-              <Tab.Screen
-                name="compte"
-                component={Screens.MyaccountScreen}
-                options={{
-                  tabBarIcon: ({ color, size }) => (
-                    <MaterialCommunityIcons name="account" color={color} size={size} />
-                  ),
-                }}
-              />
             </>
           )}
+          <>
+            <Tab.Screen
+              name="compte"
+              component={Screens.MyaccountScreen}
+              options={{
+                tabBarIcon: ({ color, size }) => (
+                  <MaterialCommunityIcons name="account" color={color} size={size} />
+                ),
+              }}
+            />
+          </>
         </>
       ) : (
         <Tab.Screen
@@ -214,9 +216,8 @@ const AppStack = observer(function AppStack() {
         />
       )}
     </Tab.Navigator>
-  );
-});
-
+  )
+})
 
 export interface NavigationProps
   extends Partial<React.ComponentProps<typeof NavigationContainer>> {}

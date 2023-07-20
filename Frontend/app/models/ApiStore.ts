@@ -125,6 +125,7 @@ export const ApiStoreModel = types
     nbPlants: types.maybeNull(types.number),
     nbComments: types.maybeNull(types.number),
     nbUser: types.maybeNull(types.number),
+    nbConversations: types.maybeNull(types.number),
     lastmessage: types.maybeNull(types.string),
   })
   .volatile(() => ({
@@ -301,7 +302,8 @@ export const ApiStoreModel = types
         })
         // Extract the member data from the response
         self.conversations = response.data["hydra:member"]
-        console.log(self.conversations[0].messages[0].content)
+        self.nbConversations = response.data["datahydra:totalItems"]
+        console.log(self.nbConversations)
       } catch (error) {
         console.error(error)
         self.setLoading(false)
