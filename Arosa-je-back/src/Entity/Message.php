@@ -37,6 +37,9 @@ class Message
     #[Groups(['read', 'write'])]
     private ?User $user = null;
 
+    #[ORM\Column]
+    private ?bool $lu = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -93,5 +96,17 @@ class Message
     public function __toString(): string
     {
         return $this->content ;
+    }
+
+    public function isLu(): ?bool
+    {
+        return $this->lu;
+    }
+
+    public function setLu(bool $lu): self
+    {
+        $this->lu = $lu;
+
+        return $this;
     }
 }
