@@ -79,6 +79,7 @@ export const ApiStoreModel = types
                 id: types.maybeNull(types.number),
                 pseudo: types.string,
               }),
+              lu: types.maybeNull(types.boolean)
             }),
           ),
           user: types.array(
@@ -131,6 +132,7 @@ export const ApiStoreModel = types
   })
   .volatile(() => ({
     loading: false,
+    erreurConv: false
   }))
   .actions(withSetPropAction)
   .views((self) => ({}))
@@ -152,6 +154,11 @@ export const ApiStoreModel = types
   .actions((self) => ({
     setIsAdmin(isAdmin: boolean) {
       self.isAdmin = isAdmin
+    },
+  }))
+  .actions((self) => ({
+    setErreur(erreurConv: boolean) {
+      self.erreurConv = erreurConv
     },
   }))
   .actions((self) => ({
@@ -196,9 +203,9 @@ export const ApiStoreModel = types
         self.setLoading(true);
         try {
             const response = yield axios.put(
-                `http://127.0.0.1:8000/api/messages/${messageId}`, 
+                `http://172.20.10.2:8000/api/messages/${messageId}`, 
                 {
-                    content: lu
+                    lu: lu
                 }, 
                 {
                     headers: {
@@ -218,6 +225,7 @@ export const ApiStoreModel = types
   .actions((self) => ({
     addConversation: flow(function* (title: string, horodatage: string, users: string[]) {
       self.setLoading(true)
+      self.setErreur(false)
       try {
         const response = yield axios.post(
           "http://172.20.10.2:8000/api/conversations",
@@ -235,7 +243,7 @@ export const ApiStoreModel = types
         self.NewconversationId = response.data.id
         console.log("conv creer")
       } catch (error) {
-        console.error(error)
+        self.setErreur(true)
         // Gérer l'erreur d'ajout de conversation
       }
       self.setLoading(false)

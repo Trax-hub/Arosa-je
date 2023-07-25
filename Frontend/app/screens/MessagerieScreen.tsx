@@ -1,20 +1,19 @@
 import React, { FC, useEffect } from "react"
+import { Alert, ViewStyle, TouchableOpacity, StyleSheet } from "react-native"
 import { observer } from "mobx-react-lite"
-import { ViewStyle, TouchableOpacity, StyleSheet } from "react-native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
-import { AppStackParamList, AppStackScreenProps } from "app/navigators"
 import { Screen, Text, Card } from "app/components"
 import { useStores } from "app/models"
 import { useNavigation } from "@react-navigation/native"
 import Spinner from "react-native-loading-spinner-overlay"
 import { AntDesign } from "@expo/vector-icons"
+import { AppStackParamList } from "app/navigators"
 
 interface MessagerieScreenProps extends NativeStackScreenProps<AppStackParamList, "Messagerie"> {}
 
 export const MessagerieScreen: FC<MessagerieScreenProps> = observer(({ navigation }) => {
-  // Pull in one of our MST stores
-  const { apiStore } = useStores()
 
+  const { apiStore } = useStores()
   const navigation1 = useNavigation()
 
   useEffect(() => {
@@ -24,6 +23,17 @@ export const MessagerieScreen: FC<MessagerieScreenProps> = observer(({ navigatio
     })
     return unsubscribe
   }, [navigation1])
+
+  useEffect(() => {
+    if (apiStore.erreurConv) {
+      Alert.alert(
+        "Attention",
+        "Vous avez déja une conversation avec cette personne.",
+        [{ text: 'OK', onPress: () => {apiStore.setErreur(false)} }],
+        { cancelable: false },
+      );
+    }
+  }, [apiStore.erreurConv])
 
   return (
     <Screen style={$root} preset="scroll">
@@ -45,14 +55,21 @@ export const MessagerieScreen: FC<MessagerieScreenProps> = observer(({ navigatio
               onPress={() => {
                 apiStore.setconversationId(conversation.id)
                 navigation.navigate("Conversation")
-                apiStore.updateMessage(lastMessage.id, true)
+                if (lastMessage && lastMessage.lu === false) {
+                  apiStore.updateMessage(lastMessage.id, true)
+                }
               }}
             >
               <Card
                 heading={otherUserPseudo}
+                headingStyle={{ fontSize: 18 }}
                 content={lastMessage ? lastMessage.content : ""}
                 RightComponent={<AntDesign name="right" size={18} color="black" />}
-                contentStyle={{ color: "grey" }}
+                contentStyle={
+                  lastMessage && lastMessage.lu
+                    ? { color: "grey", fontSize: 15 }
+                    : { color: "black" }
+                }
               ></Card>
             </TouchableOpacity>
           )
